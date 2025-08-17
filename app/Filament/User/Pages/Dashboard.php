@@ -3,7 +3,7 @@
 namespace App\Filament\User\Pages;
 
 use Filament\Pages\Page;
-use App\Filament\Widgets\MyWhatsappDeviceStats;
+use App\Filament\User\Widgets\MyWhatsappDeviceStats;
 
 class Dashboard extends Page
 {

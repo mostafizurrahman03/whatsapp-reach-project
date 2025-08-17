@@ -7,7 +7,7 @@ use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 
 // Import widget
-use App\Filament\Widgets\MyWhatsappDeviceStats;
+use App\Filament\User\Widgets\MyWhatsappDeviceStats;
 
 class ListMyWhatsappDevices extends ListRecords
 {

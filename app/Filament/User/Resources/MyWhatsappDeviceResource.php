@@ -15,20 +15,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Http;
 
-// <?php
-
-// namespace App\Filament\Resources;
-
-// use App\Filament\Resources\MyWhatsappDeviceResource\Pages;
-// use App\Models\MyWhatsappDevice;
-// use Filament\Forms;
-// use Filament\Forms\Form;
-// use Filament\Resources\Resource;
-// use Filament\Tables;
-// use Filament\Tables\Table;
-
 class MyWhatsappDeviceResource extends Resource
-{
+{ 
     protected static ?string $model = MyWhatsappDevice::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-device-phone-mobile';
