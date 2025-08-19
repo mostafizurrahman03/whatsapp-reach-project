@@ -78,7 +78,7 @@ class MyWhatsappDeviceResource extends Resource
 
                         try {
                             
-                            $response = Http::get("http://43.231.78.204:3333/api/device/md__sakib/qr");
+                            $response = Http::get("http://43.231.78.204:3333/api/device/Md__Sakib/qr");
 
                             if ($response->successful()) {
                                 $data = $response->json();
