@@ -10,6 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
+use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Http;
 
 class MyWhatsappDeviceResource extends Resource
@@ -105,41 +106,85 @@ class MyWhatsappDeviceResource extends Resource
 
 
                 // Refresh Status action
+
                 Action::make('refreshStatus')
                     ->label('Refresh Status')
-                    ->icon('heroicon-o-arrow-path') 
+                    ->icon('heroicon-o-arrow-path')
                     ->action(function ($record) {
                         try {
                             $response = Http::get("http://43.231.78.204:3333/api/device/{$record->device_id}/status");
+                            
                             if ($response->successful()) {
                                 $data = $response->json();
-
                                 $record->status = $data['connected'] ? 'connected' : 'disconnected';
                                 $record->phone_number = $data['number'] ?? null;
                                 $record->save();
+
+                                // Add a success notification
+                                Notification::make()
+                                    ->title('Status refreshed successfully!')
+                                    ->success()
+                                    ->send();
+                            } else {
+                                // Add a failure notification for unsuccessful API response
+                                Notification::make()
+                                    ->title('Failed to refresh status.')
+                                    ->body('The API request was not successful.')
+                                    ->danger()
+                                    ->send();
                             }
                         } catch (\Exception $e) {
-                            // ignore
+                            // Add a failure notification for connection errors
+                            Notification::make()
+                                ->title('Connection Error')
+                                ->body('Could not connect to the API. Please try again later.')
+                                ->danger()
+                                ->send();
                         }
                     }),
                 //Reconnect whatsapp device
-                    // Action::make('reconnectDevice')
-                    // ->label('Reconnect Status')
-                    // ->icon('heroicon-o-arrow-path') 
-                    // ->action(function ($record) {
-                    //     try {
-                    //         $response = Http::get("http://43.231.78.204:3333/api/device/{$record->device_id}/reconnect");
-                    //         if ($response->successful()) {
-                    //             $data = $response->json();
+                    Action::make('reconnectDevice')
+                    ->label('Reconnect Status')
+                    ->icon('heroicon-o-arrow-path')
+                    ->action(function ($record) {
+                        try {
+                            $response = Http::post("http://43.231.78.204:3333/api/device/{$record->device_id}/reconnect");
 
-                    //             $record->status = $data['reconnecting'] ? 'connected' : 'disconnected';
-                    //             $record->phone_number = $data['number'] ?? null;
-                    //             $record->save();
-                    //         }
-                    //     } catch (\Exception $e) {
-                    //         // ignore
-                    //     }
-                    // }),
+                            if ($response->successful()) {
+                                $data = $response->json();
+
+                                // Map reconnecting → connected
+                                $record->status = ($data['status'] === 'reconnecting')
+                                    ? 'connected'
+                                    : 'disconnected';
+
+                                $record->phone_number = $data['number'] ?? null;
+                                $record->save();
+
+                                Notification::make()
+                                    ->title('Device reconnected successfully!')
+                                    ->success()
+                                    ->send();
+                            } else {
+                                \Log::error('Reconnect failed: '.$response->status().' '.$response->body());
+
+                                Notification::make()
+                                    ->title('Failed to reconnect device.')
+                                    ->body('The API request was not successful. ('.$response->status().')')
+                                    ->danger()
+                                    ->send();
+                            }
+                        } catch (\Exception $e) {
+                            \Log::error('Reconnect Error: '.$e->getMessage());
+
+                            Notification::make()
+                                ->title('Connection Error')
+                                ->body('Could not connect to the API. Please try again later.')
+                                ->danger()
+                                ->send();
+                        }
+                    }),
+
 
                 // Delete action
                 
