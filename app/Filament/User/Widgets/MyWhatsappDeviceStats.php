@@ -16,6 +16,7 @@ class MyWhatsappDeviceStats extends BaseWidget
                 ->description('All devices registered')
                 ->color('primary')
                 ->icon('heroicon-o-device-phone-mobile'),
+                
 
             Card::make('Connected Devices', MyWhatsappDevice::where('status', 'connected')->count())
                 ->description('Devices currently connected')

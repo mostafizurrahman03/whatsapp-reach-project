@@ -6,10 +6,11 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 Route::get('/', function () {
+    return redirect()->route('filament.user.auth.login');
+});
+Route::get('/admin', function () {
     return redirect()->route('filament.admin.auth.login');
 });
 
 
-Route::get('/user', function () {
-    return redirect()->route('filament.user.auth.login');
-});
+

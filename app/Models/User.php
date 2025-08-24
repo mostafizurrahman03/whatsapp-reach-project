@@ -46,4 +46,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function myWhatsappDevices()
+    {
+        return $this->hasMany(MyWhatsappDevice::class, 'user_id', 'id');
+    }
+
 }

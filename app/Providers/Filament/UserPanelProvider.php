@@ -26,6 +26,7 @@ class UserPanelProvider extends PanelProvider
             ->id('user')
             ->path('user')
             ->login()
+            ->brandName('WhatsReach') 
             ->colors([
                 'primary' => Color::Green,
             ])
