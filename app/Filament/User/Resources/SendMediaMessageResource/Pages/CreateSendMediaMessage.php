@@ -13,60 +13,82 @@ class CreateSendMediaMessage extends CreateRecord
     protected static string $resource = SendMediaMessageResource::class;
 
     protected function handleRecordCreation(array $data): SendMediaMessage
-    {
-        // 1. Save to local DB
-        $message = SendMediaMessage::create([
-            'number'    => $data['number'],
-            'message'   => $data['message'],
-            'media_url' => $data['attachments'][0] ?? null, // first file for DB reference
-            'is_sent'   => false,
+{
+    // 1. Save to local DB
+    $messageData = [
+        'number'    => $data['number'],
+        'message'   => $data['message'] ?? '',
+        'media_url' => $data['media_url'] ?? null, // single file
+        'is_sent'   => false,
+    ];
+
+    $message = SendMediaMessage::create($messageData);
+
+    try {
+        $request = Http::withHeaders([
+            'Accept' => 'application/json',
         ]);
 
-        try {
-            // 2. Prepare attachments for API (multipart)
-            $multipart = [];
-            if (!empty($data['attachments'])) {
-                foreach ($data['attachments'] as $file) {
-                    $filePath = storage_path('app/public/messages/' . $file);
-                    if (file_exists($filePath)) {
-                        $multipart[] = Http::attach('file[]', file_get_contents($filePath), $file);
-                    }
-                }
-            }
+        $url = "http://43.231.78.204:3333/api/device/{$data['device_id']}/send-media";
 
-            // 3. Send API request
-            $response = Http::withHeaders([
-                'Accept' => 'application/json',
-            ])->attach(...$multipart)
-              ->post("http://43.231.78.204:3333/api/device/{$data['device_id']}/send-media", [
-                  'number'  => $data['number'],
-                  'message' => $data['message'] ?? '',
-              ]);
+        // 2. Attach file if exists
+        if (!empty($data['media_url'])) {
+            $filePath = storage_path('app/public/messages/' . basename($data['media_url']));
 
-            // 4. Handle response
-            if ($response->successful()) {
-                $message->update(['is_sent' => true]);
-
-                Notification::make()
-                    ->title('Message Sent Successfully')
-                    ->success()
-                    ->send();
+            if (file_exists($filePath)) {
+                $response = $request
+                    ->attach(
+                        'file',
+                        fopen($filePath, 'r'),
+                        basename($data['media_url'])
+                    )
+                    ->post($url, [
+                        'number'  => $data['number'],
+                        'caption' => $data['message'] ?? '',
+                    ]);
             } else {
-                Notification::make()
-                    ->title('Failed to Send Message')
-                    ->danger()
-                    ->body('WhatsApp server error: ' . $response->body())
-                    ->send();
+                throw new \Exception("File not found: {$filePath}");
             }
-        } catch (\Exception $e) {
-            \Log::error('WhatsApp API Error: ' . $e->getMessage());
-
-            Notification::make()
-                ->title('Error Sending Message')
-                ->danger()
-                ->send();
+        } else {
+            //  if file does not have, then send text
+            $response = $request->post($url, [
+                'number'  => $data['number'],
+                'caption' => $data['message'] ?? '',
+            ]);
         }
 
-        return $message;
+        // 3. Handle response
+        if ($response->successful()) {
+            $message->update(['is_sent' => true]);
+
+            Notification::make()
+                ->title('Message Sent Successfully')
+                ->success()
+                ->send();
+        } else {
+            Notification::make()
+                ->title('Failed to Send Message')
+                ->danger()
+                ->body('WhatsApp server error: ' . $response->body())
+                ->send();
+        }
+    } catch (\Exception $e) {
+        \Log::error('WhatsApp API Error: ' . $e->getMessage());
+
+        Notification::make()
+            ->title('Error Sending Message')
+            ->danger()
+            ->body($e->getMessage())
+            ->send();
     }
+
+    return $message;
+}
+protected function getRedirectUrl(): string
+{
+    return $this->getResource()::getUrl('index');
+}
+
+
+
 }

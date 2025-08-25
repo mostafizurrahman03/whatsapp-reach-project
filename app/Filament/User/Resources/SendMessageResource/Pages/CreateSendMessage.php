@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Http;
 
 class CreateSendMessage extends CreateRecord
 {
-    // ✅ Must define the resource
+    //  Must define the resource
     protected static string $resource = SendMessageResource::class;
 
     // Change the create/save button text in form
@@ -23,10 +23,10 @@ class CreateSendMessage extends CreateRecord
     // }
     protected function handleRecordCreation(array $data): SendMessage
     {
-        // 1. প্রথমে DB তে save
+        // 1.  First save in DB
         $message = SendMessage::create($data);
 
-        // 2. API call (WhatsApp server এ পাঠানো)
+        // 2. API call (WhatsApp server)
         try {
             $response = Http::post("http://43.231.78.204:3333/api/device/{$data['device_id']}/send", [
                 'number' => $data['number'],
@@ -38,10 +38,15 @@ class CreateSendMessage extends CreateRecord
                 $message->update(['is_sent' => true]);
             }
         } catch (\Exception $e) {
-            // error হলে কিছু log করতে পারেন
+            // error log 
         }
 
         return $message;
     }
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
 }
 

@@ -12,4 +12,6 @@ class SendMediaMessage extends Model
         'media_url',
         'is_sent',
     ];
+        
+
 }

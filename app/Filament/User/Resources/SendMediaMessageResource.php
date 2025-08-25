@@ -21,6 +21,7 @@ class SendMediaMessageResource extends Resource
     protected static ?string $navigationGroup = 'Send Single Message';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationLabel = 'Send Media Message';
 
     public static function form(Form $form): Form
     {
@@ -58,14 +59,17 @@ class SendMediaMessageResource extends Resource
                 //         'table', 'attachFiles',
                 //         'undo', 'redo',
                 //     ]),
-                    Forms\Components\FileUpload::make('attachments')
+                Forms\Components\FileUpload::make('media_url')
                         ->disk('public') // Which disk the files will be saved to
                         ->directory('messages') // Folder where files will be stored
-                        ->multiple() // Support for multiple file uploads
+                        // ->multiple() // Support for multiple file uploads
                         ->downloadable() // Allow files to be downloaded
                         ->openable() // Allow files to be opened
+                        ->helperText('You can upload one file (jpg, jpge, png, pdf, docx, xlsx, csv, mp4). Max size: 2MB each.')
                         ->previewable(false) // Set true if you want image preview
                         ->acceptedFileTypes([
+                            'image/jpeg',
+                            'image/png',
                             'application/pdf',
                             'application/msword',
                             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -73,6 +77,7 @@ class SendMediaMessageResource extends Resource
                             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                             'image/*',
                         ]),
+                        
 
 
                 Forms\Components\Toggle::make('is_sent')

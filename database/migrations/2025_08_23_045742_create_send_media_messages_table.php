@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('number');
             $table->text('message');
-            $table->string('media_url');
+            $table->string('media_url')->nullable();
             $table->boolean('is_sent')->default(false);
             $table->timestamps();
         });
