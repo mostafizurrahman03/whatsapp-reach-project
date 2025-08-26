@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('send_messages', function (Blueprint $table) {
             $table->id();
+            $table->string('device_id');   // sender device id column added
             $table->string('number');
             $table->text('message');
             $table->boolean('is_sent')->default(false);

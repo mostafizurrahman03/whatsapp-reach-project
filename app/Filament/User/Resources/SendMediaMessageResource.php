@@ -45,12 +45,14 @@ class SendMediaMessageResource extends Resource
 
                 Forms\Components\TextInput::make('number')
                     ->label('Receiver Number')
+                    ->placeholder('Enter phone number with country code (88)')
                     ->required(),
 
                 Forms\Components\Textarea::make('message')
                     ->label('Message')
                     ->rows(4)
                     ->required(),
+
                 // RichEditor::make('message')
                 //     ->toolbarButtons([
                 //         'bold', 'italic', 'underline', 'strike', 'subscript', 'superscript', 'link',
@@ -60,26 +62,29 @@ class SendMediaMessageResource extends Resource
                 //         'undo', 'redo',
                 //     ]),
                 Forms\Components\FileUpload::make('media_url')
-                        ->disk('public') // Which disk the files will be saved to
-                        ->directory('messages') // Folder where files will be stored
-                        // ->multiple() // Support for multiple file uploads
-                        ->downloadable() // Allow files to be downloaded
-                        ->openable() // Allow files to be opened
-                        ->helperText('You can upload one file (jpg, jpge, png, pdf, docx, xlsx, csv, mp4). Max size: 2MB each.')
-                        ->previewable(false) // Set true if you want image preview
-                        ->acceptedFileTypes([
-                            'image/jpeg',
-                            'image/png',
-                            'application/pdf',
-                            'application/msword',
-                            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                            'application/vnd.ms-excel',
-                            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                            'image/*',
-                        ]),
-                        
-
-
+                    ->label('Attachment')
+                    ->disk('public') // Which disk the files will be saved to
+                    ->directory('messages') // Folder where files will be stored
+                    // ->multiple() // Support for multiple file uploads
+                    ->downloadable() // Allow files to be downloaded
+                    ->openable() // Allow files to be opened
+                    ->helperText('You can upload one file (jpg, jpeg, png, pdf, docx, xlsx, csv, mp4). Max size: 2MB each.')
+                    ->previewable(false) // Set true if you want image preview
+                    ->acceptedFileTypes([
+                        'image/jpeg',
+                        'image/png',
+                        'application/pdf',
+                        'application/msword',
+                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        'application/vnd.ms-excel',
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        'image/*',
+                    ]),
+                Forms\Components\Textarea::make('caption')
+                    ->label('Caption')
+                    ->placeholder('Enter caption for the attachment')
+                    ->rows(2)
+                    ->maxLength(255),        
                 Forms\Components\Toggle::make('is_sent')
                     ->label('Sent')
                     ->default(false),
@@ -90,8 +95,14 @@ class SendMediaMessageResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('device.phone_number')
+                ->label('Sender Number')
+                ->formatStateUsing(fn ($state, $record) => $state ?? $record->device_id)
+                ->sortable()
+                ->searchable(),
                 Tables\Columns\TextColumn::make('number')->label('Receiver'),
                 Tables\Columns\TextColumn::make('message')->label('Message')->limit(50),
+                Tables\Columns\TextColumn::make('caption')->label('Caption')->limit(50),
                 Tables\Columns\IconColumn::make('is_sent')->boolean()->label('Sent'),
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Created At'),
             ])

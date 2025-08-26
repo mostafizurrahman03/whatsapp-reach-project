@@ -8,7 +8,12 @@ class SendMessage extends Model
 {
        protected $fillable = [
         'number',
+        'device_id',
         'message',
         'is_sent',
     ];
+    public function device()
+    {
+        return $this->belongsTo(\App\Models\MyWhatsappDevice::class, 'device_id', 'device_id');
+    }
 }
