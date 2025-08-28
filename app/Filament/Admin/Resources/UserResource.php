@@ -40,11 +40,11 @@ class UserResource extends Resource
 
         Forms\Components\TextInput::make('password')
             ->password()
-            ->required(fn ($record) => $record === null) // update হলে password optional
+            ->required(fn ($record) => $record === null) // update password optional
             ->dehydrateStateUsing(fn ($state) => $state ? Hash::make($state) : null)
             ->maxLength(255),
 
-        // ✅ Role Assign Field
+        //  Role Assign Field
         Forms\Components\Select::make('roles')
             ->label('Assign Role')
             ->multiple()
@@ -62,7 +62,9 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
+                    ->searchable()
+                    ->icon('heroicon-o-envelope')
+                    ->iconColor('primary'),
                 Tables\Columns\TextColumn::make('roles.name')
                 ->label('Roles')
                 ->sortable()

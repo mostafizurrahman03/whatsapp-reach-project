@@ -10,6 +10,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\RichEditor;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -69,7 +71,7 @@ class SendMediaMessageResource extends Resource
                     ->downloadable() // Allow files to be downloaded
                     ->openable() // Allow files to be opened
                     ->helperText('You can upload one file (jpg, jpeg, png, pdf, docx, xlsx, csv, mp4). Max size: 2MB each.')
-                    ->previewable(false) // Set true if you want image preview
+                    ->previewable(true) // Set true if you want image preview
                     ->acceptedFileTypes([
                         'image/jpeg',
                         'image/png',
@@ -96,15 +98,27 @@ class SendMediaMessageResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('device.phone_number')
-                ->label('Sender Number')
-                ->formatStateUsing(fn ($state, $record) => $state ?? $record->device_id)
-                ->sortable()
-                ->searchable(),
-                Tables\Columns\TextColumn::make('number')->label('Receiver'),
-                Tables\Columns\TextColumn::make('message')->label('Message')->limit(50),
-                Tables\Columns\TextColumn::make('caption')->label('Caption')->limit(50),
+                    ->label('Sender Number')
+                    ->formatStateUsing(fn ($state, $record) => $state ?? $record->device_id)
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('number')->label('Receiver')->sortable(),
+                Tables\Columns\TextColumn::make('message')->label('Message')->limit(25)->sortable(), 
+
+                Tables\Columns\ImageColumn::make('media_url')
+                    ->label('Attachment')
+                    ->disk('public')
+                    ->height(50)
+                    ->width(50)
+                    ->extraAttributes(['class' => 'rounded'])
+                    ->url(fn ($record) => $record->media_url ? asset('storage/' . $record->media_url) : null)
+                    // ->visible(...)  // temporarily remove
+                    ->openUrlInNewTab(),
+
+                Tables\Columns\TextColumn::make('caption')->label('Caption')->limit(25),
                 Tables\Columns\IconColumn::make('is_sent')->boolean()->label('Sent'),
-                Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Created At'),
+                Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Created At')    ->sortable(), 
+
             ])
             ->filters([
                 //
