@@ -8,6 +8,7 @@ class SendMessage extends Model
 {
        protected $fillable = [
         'number',
+        'user_id',
         'device_id',
         'message',
         'is_sent',

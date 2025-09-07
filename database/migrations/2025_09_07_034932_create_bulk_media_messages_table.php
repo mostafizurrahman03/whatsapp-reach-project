@@ -11,16 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('send_messages', function (Blueprint $table) {
+        Schema::create('bulk_media_messages', function (Blueprint $table) {
             $table->id();
-            $table->string('device_id');   // relation column
-            $table->foreign('device_id')   // foreign key constraint
+            $table->string('device_id');
+            $table->foreign('device_id')
                 ->references('device_id')
                 ->on('my_whatsapp_devices')
                 ->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('number');
-            $table->text('message');
+            $table->text('message')->nullable(); // message body
+            $table->string('caption')->nullable();  
+            $table->string('media_url')->nullable();  
             $table->boolean('is_sent')->default(false);
             $table->timestamps();
         });
@@ -31,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('send_messages');
+        Schema::dropIfExists('bulk_media_messages');
     }
 };

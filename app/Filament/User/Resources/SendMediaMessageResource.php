@@ -24,6 +24,8 @@ class SendMediaMessageResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'Send Media Message';
+    protected static ?int $navigationSort = 2;
+
 
     public static function form(Form $form): Form
     {
@@ -47,7 +49,7 @@ class SendMediaMessageResource extends Resource
 
                 Forms\Components\TextInput::make('number')
                     ->label('Receiver Number')
-                    ->placeholder('Enter phone number with country code (88)')
+                    ->placeholder('8801XXXXXXXXX')
                     ->required(),
 
                 Forms\Components\Textarea::make('message')
@@ -151,5 +153,11 @@ class SendMediaMessageResource extends Resource
             'create' => Pages\CreateSendMediaMessage::route('/create'),
             'edit' => Pages\EditSendMediaMessage::route('/{record}/edit'),
         ];
+    }
+      // Filter media messages by logged-in user
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('user_id', auth()->id());
     }
 }

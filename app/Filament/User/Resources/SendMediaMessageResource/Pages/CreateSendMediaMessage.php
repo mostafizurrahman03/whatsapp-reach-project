@@ -16,6 +16,7 @@ class CreateSendMediaMessage extends CreateRecord
     {
         // 1. Save to local DB
         $messageData = [
+            'user_id'   => auth()->id(),       // <-- logged-in user id
             'device_id' => $data['device_id'],
             'number'    => $data['number'],
             'message'   => $data['message'] ?? '',

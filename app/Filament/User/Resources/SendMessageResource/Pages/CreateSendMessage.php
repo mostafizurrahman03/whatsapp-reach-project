@@ -4,49 +4,62 @@ namespace App\Filament\User\Resources\SendMessageResource\Pages;
 
 use App\Filament\User\Resources\SendMessageResource;
 use App\Models\SendMessage;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Http;
+use Filament\Notifications\Notification;
 
 class CreateSendMessage extends CreateRecord
 {
-    //  Must define the resource
     protected static string $resource = SendMessageResource::class;
 
-    // Change the create/save button text in form
-    // protected function getFormActions(): array
-    // {
-    //     return [
-    //         Actions\CreateAction::make()
-    //             ->label('Send Message'), // Custom button text
-    //     ];
-    // }
     protected function handleRecordCreation(array $data): SendMessage
     {
-        // 1.  First save in DB
-        $message = SendMessage::create($data);
+        // 1. Logged-in user অনুযায়ী message save
+        $message = SendMessage::create([
+            'user_id'   => auth()->id(),
+            'device_id' => $data['device_id'],
+            'number'    => $data['number'],
+            'message'   => $data['message'] ?? '',
+            'is_sent'   => false,
+        ]);
 
         // 2. API call (WhatsApp server)
         try {
             $response = Http::post("http://43.231.78.204:3333/api/device/{$data['device_id']}/send", [
                 'number' => $data['number'],
-                'message' => $data['message'],
+                'message' => $data['message'] ?? '',
                 'attachments' => $data['attachments'] ?? [],
             ]);
 
             if ($response->successful()) {
                 $message->update(['is_sent' => true]);
+
+                Notification::make()
+                    ->title('Message Sent Successfully')
+                    ->success()
+                    ->send();
+            } else {
+                Notification::make()
+                    ->title('Failed to Send Message')
+                    ->danger()
+                    ->body('WhatsApp server error')
+                    ->send();
             }
         } catch (\Exception $e) {
-            // error log 
+            \Log::error('WhatsApp API Error: ' . $e->getMessage());
+
+            Notification::make()
+                ->title('Error Sending Message')
+                ->danger()
+                ->body($e->getMessage())
+                ->send();
         }
 
         return $message;
     }
+
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
     }
-
 }
-

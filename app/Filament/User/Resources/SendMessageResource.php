@@ -22,6 +22,8 @@ class SendMessageResource extends Resource
     protected static ?string $navigationGroup = 'Send Single Message';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'Send Message';
+    protected static ?int $navigationSort = 2;
+
 
     public static function form(Form $form): Form
     {
@@ -79,6 +81,7 @@ class SendMessageResource extends Resource
 
                 Forms\Components\TextInput::make('number')
                     ->label('Receiver Number')
+                    ->placeholder('8801XXXXXXXXX')
                     ->required(),
 
                 Forms\Components\Textarea::make('message')
@@ -147,5 +150,11 @@ class SendMessageResource extends Resource
             'create' => Pages\CreateSendMessage::route('/create'),
             'edit' => Pages\EditSendMessage::route('/{record}/edit'),
         ];
+    }
+        // Filter messages by logged-in user
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('user_id', auth()->id());
     }
 }

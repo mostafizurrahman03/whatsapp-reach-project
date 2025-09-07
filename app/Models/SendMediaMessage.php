@@ -8,6 +8,7 @@ class SendMediaMessage extends Model
 {
         protected $fillable = [
         'number',
+        'user_id',
         'device_id',
         'message',
         'caption',

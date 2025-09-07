@@ -13,7 +13,12 @@ return new class extends Migration
     {
         Schema::create('send_media_messages', function (Blueprint $table) {
             $table->id();
-            $table->string('device_id');   // sender device id column added
+            $table->string('device_id');   // relation column
+            $table->foreign('device_id')   // foreign key constraint
+                ->references('device_id')
+                ->on('my_whatsapp_devices')
+                ->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('number');
             $table->text('message');
             $table->string('caption')->nullable();  // new column added

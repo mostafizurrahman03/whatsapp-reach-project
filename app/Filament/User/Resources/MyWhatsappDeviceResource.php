@@ -10,6 +10,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Http;
 
@@ -21,6 +23,8 @@ class MyWhatsappDeviceResource extends Resource
     protected static ?string $navigationGroup = 'WhatsApp';
     protected static ?string $pluralModelLabel = 'WhatsApp Devices';
     protected static ?string $navigationLabel = 'Devices';
+    protected static ?int $navigationSort = 1;
+
 
     public static function form(Form $form): Form
     {
@@ -223,5 +227,10 @@ class MyWhatsappDeviceResource extends Resource
             'create' => Pages\CreateMyWhatsappDevice::route('/create'),
             'edit' => Pages\EditMyWhatsappDevice::route('/{record}/edit'),
         ];
+    }
+     public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('user_id', auth()->id());
     }
 }
