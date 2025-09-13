@@ -25,16 +25,14 @@ class MyWhatsappDeviceResource extends Resource
     protected static ?string $navigationLabel = 'Devices';
     protected static ?int $navigationSort = 1;
 
-
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('device_id')
-                    ->required()
-                    ->unique(ignoreRecord: true)
-                    ->label('Device ID'),
-            ]);
+        return $form->schema([
+            Forms\Components\TextInput::make('device_id')
+                ->required()
+                ->unique(ignoreRecord: true)
+                ->label('Device ID'),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -55,9 +53,6 @@ class MyWhatsappDeviceResource extends Resource
                     ])
                     ->sortable()
                     ->label('Connection Status'),
-                // Tables\Columns\IconColumn::make('connected')
-                //     ->boolean()
-                //     ->label('Connected'),
                 Tables\Columns\TextColumn::make('created_at')->dateTime(),
             ])
             ->filters([
@@ -69,36 +64,42 @@ class MyWhatsappDeviceResource extends Resource
                     ]),
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
 
-                // QR Code modal
+                //  QR Code modal
                 Action::make('qrCode')
                     ->label('Show QR Code')
                     ->icon('heroicon-o-qr-code')
                     ->modalHeading('WhatsApp Device QR Code')
                     ->modalSubheading('Scan this QR code with your WhatsApp app.')
                     ->modalContent(function ($record) {
-
                         $qrCodeImage = null;
                         $connected = false;
 
                         try {
-                            // GET status API
                             $statusResponse = Http::get("http://43.231.78.204:3333/api/device/{$record->device_id}/status");
+
                             if ($statusResponse->successful()) {
                                 $statusData = $statusResponse->json();
                                 $connected = $statusData['connected'] ?? false;
 
-                                // Only fetch QR if not connected
                                 if (!$connected) {
                                     $qrResponse = Http::get("http://43.231.78.204:3333/api/device/{$record->device_id}/qr");
                                     if ($qrResponse->successful()) {
                                         $qrCodeImage = $qrResponse->json()['qr'] ?? null;
+
+                                        if ($qrCodeImage) {
+                                            $record->qr_image = $qrCodeImage;
+                                            $record->save();
+                                        }
                                     }
                                 }
                             }
                         } catch (\Exception $e) {
                             $qrCodeImage = null;
+                        }
+
+                        if (!$qrCodeImage && $record->qr_image) {
+                            $qrCodeImage = $record->qr_image;
                         }
 
                         return view('filament.my-whatsapp-device.qr-code-modal', [
@@ -108,29 +109,34 @@ class MyWhatsappDeviceResource extends Resource
                         ]);
                     }),
 
-
-                // Refresh Status action
-
+                //  Refresh Status action
                 Action::make('refreshStatus')
                     ->label('Refresh Status')
                     ->icon('heroicon-o-arrow-path')
                     ->action(function ($record) {
                         try {
                             $response = Http::get("http://43.231.78.204:3333/api/device/{$record->device_id}/status");
-                            
+
                             if ($response->successful()) {
                                 $data = $response->json();
+
                                 $record->status = $data['connected'] ? 'connected' : 'disconnected';
+                                $record->connected = $data['connected'] ?? false;
                                 $record->phone_number = $data['number'] ?? null;
+
+                                if ($data['connected']) {
+                                    $record->last_connected_at = now();
+                                } else {
+                                    $record->last_disconnected_at = now();
+                                }
+
                                 $record->save();
 
-                                // Add a success notification
                                 Notification::make()
                                     ->title('Status refreshed successfully!')
                                     ->success()
                                     ->send();
                             } else {
-                                // Add a failure notification for unsuccessful API response
                                 Notification::make()
                                     ->title('Failed to refresh status.')
                                     ->body('The API request was not successful.')
@@ -138,7 +144,6 @@ class MyWhatsappDeviceResource extends Resource
                                     ->send();
                             }
                         } catch (\Exception $e) {
-                            // Add a failure notification for connection errors
                             Notification::make()
                                 ->title('Connection Error')
                                 ->body('Could not connect to the API. Please try again later.')
@@ -146,9 +151,10 @@ class MyWhatsappDeviceResource extends Resource
                                 ->send();
                         }
                     }),
-                //Reconnect whatsapp device
-                    Action::make('reconnectDevice')
-                    ->label('Reconnect Status')
+
+                //  Reconnect whatsapp device
+                Action::make('reconnectDevice')
+                    ->label('Reconnect Device')
                     ->icon('heroicon-o-arrow-path')
                     ->action(function ($record) {
                         try {
@@ -157,7 +163,6 @@ class MyWhatsappDeviceResource extends Resource
                             if ($response->successful()) {
                                 $data = $response->json();
 
-                                // Map reconnecting → connected
                                 $record->status = ($data['status'] === 'reconnecting')
                                     ? 'connected'
                                     : 'disconnected';
@@ -189,22 +194,30 @@ class MyWhatsappDeviceResource extends Resource
                         }
                     }),
 
-
-                // Delete action
-                
+                //  Logout action with local clear
                 Action::make('logoutDevice')
                     ->label('Logout Device')
                     ->icon('heroicon-o-power')
                     ->action(function ($record) {
                         try {
                             Http::post("http://43.231.78.204:3333/api/device/{$record->device_id}/logout");
+
+                            $record->update([
+                                'status' => 'disconnected',
+                                'phone_number' => null,
+                                'session_data' => null,
+                                'qr_code' => null,
+                                'qr_image' => null,
+                                'last_disconnected_at' => now(),
+                            ]);
                         } catch (\Exception $e) {
                             // ignore
                         }
                     })
-                    ->requiresConfirmation() 
+                    ->requiresConfirmation()
                     ->color('warning'),
 
+                //  Delete action
                 Tables\Actions\DeleteAction::make()
                     ->after(function ($record) {
                         try {
@@ -228,9 +241,13 @@ class MyWhatsappDeviceResource extends Resource
             'edit' => Pages\EditMyWhatsappDevice::route('/{record}/edit'),
         ];
     }
-     public static function getEloquentQuery(): Builder
+
+    public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
             ->where('user_id', auth()->id());
     }
+
+
+    
 }

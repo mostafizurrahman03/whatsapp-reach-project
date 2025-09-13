@@ -44,7 +44,7 @@ class UserResource extends Resource
             ->dehydrateStateUsing(fn ($state) => $state ? Hash::make($state) : null)
             ->maxLength(255),
 
-        // ✅ Role Assign Field
+        //  Role Assign Field
         Forms\Components\Select::make('roles')
             ->label('Assign Role')
             ->multiple()

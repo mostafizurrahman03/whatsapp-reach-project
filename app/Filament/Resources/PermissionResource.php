@@ -79,4 +79,6 @@ class PermissionResource extends Resource
             'edit' => Pages\EditPermission::route('/{record}/edit'),
         ];
     }
+    
+
 }

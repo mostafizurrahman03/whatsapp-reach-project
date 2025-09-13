@@ -7,6 +7,7 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\UserResource\Pages;
 use App\Filament\Admin\Resources\UserResource\RelationManagers;
 use App\Models\User;
+// use Spatie\Permission\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -111,4 +112,11 @@ class UserResource extends Resource
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
+    public static function canViewAny(): bool
+    {
+        return auth()->user()->can('view_any_user');
+    }
+
+    
+
 }

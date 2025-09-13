@@ -109,10 +109,14 @@ class BulkMediaMessageResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('device.phone_number')
                     ->label('Sender Number')
-                    ->formatStateUsing(fn ($state, $record) => $state ?? $record->device_id)
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('number')->label('Receiver')->sortable(),
+
+                // Tables\Columns\TextColumn::make('number')->label('Receiver')->sortable(),
+                Tables\Columns\TextColumn::make('receivers')
+                    ->label('Receivers')
+                    ->getStateUsing(fn ($record) => $record->recipients->pluck('number')->implode(', ')),
+
                 Tables\Columns\TextColumn::make('message')->label('Message')->limit(25)->sortable(), 
 
                 Tables\Columns\ImageColumn::make('media_url')
