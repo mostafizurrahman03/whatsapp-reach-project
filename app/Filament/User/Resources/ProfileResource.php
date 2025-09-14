@@ -74,7 +74,9 @@ class ProfileResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                
             ])
+            ->actionsColumnLabel('Action')
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
@@ -87,78 +89,78 @@ class ProfileResource extends Resource
 
     // Infolist schema for view page
     public static function infolist(Infolist $infolist): Infolist
-{
-    return $infolist
-        ->schema([
-            Section::make('👤 Profile Information')
-                ->description('Complete details of the selected user profile')
-                ->schema([
-                    Grid::make(3)->schema([
+    {
+        return $infolist
+            ->schema([
+                Section::make('👤 Profile Information')
+                    ->description('Complete details of the selected user profile')
+                    ->schema([
+                        Grid::make(3)->schema([
 
-                        // প্রোফাইল ছবি (Left)
-                        ImageEntry::make('profile_picture')
-                            ->label('')
-                            ->circular()
-                            ->height(180)
+                            // (Left)
+                            ImageEntry::make('profile_picture')
+                                ->label('')
+                                ->circular()
+                                ->height(180)
+                                ->columnSpan(1),
+
+                            // (Middle)
+                            Group::make([
+                                TextEntry::make('user.name')
+                                    ->label('Full Name')
+                                    ->weight('bold')
+                                    ->size('xl')
+                                    ->icon('heroicon-o-user'),
+
+                                TextEntry::make('bio')
+                                    ->label('Bio')
+                                    ->default('No bio available')
+                                    ->placeholder('No bio available')
+                                    ->columnSpanFull()
+                                    ->icon('heroicon-o-chat-bubble-left-ellipsis'),
+                            ])
                             ->columnSpan(1),
 
-                        // ইউজারের ডিটেইলস (Middle)
-                        Group::make([
-                            TextEntry::make('user.name')
-                                ->label('Full Name')
-                                ->weight('bold')
-                                ->size('xl')
-                                ->icon('heroicon-o-user'),
+                            // Online / Last Seen (Right)
+                            Group::make([
+                                IconEntry::make('is_online')
+                                    ->boolean()
+                                    ->label('Online Status')
+                                    ->trueIcon('heroicon-o-check-circle')
+                                    ->falseIcon('heroicon-o-x-circle'),
 
-                            TextEntry::make('bio')
-                                ->label('Bio')
-                                ->default('No bio available')
-                                ->placeholder('No bio available')
-                                ->columnSpanFull()
-                                ->icon('heroicon-o-chat-bubble-left-ellipsis'),
-                        ])
-                        ->columnSpan(1),
+                                TextEntry::make('last_seen')
+                                    ->label('Last Seen')
+                                    ->dateTime('d M Y, h:i A')
+                                    ->badge()
+                                    ->color('gray'),
+                            ])
+                            ->columnSpan(1),
+                        ]),
+                    ])
+                    ->columns(3)
+                    ->collapsible(),
 
-                        // Online / Last Seen (Right)
-                        Group::make([
-                            IconEntry::make('is_online')
-                                ->boolean()
-                                ->label('Online Status')
-                                ->trueIcon('heroicon-o-check-circle')
-                                ->falseIcon('heroicon-o-x-circle'),
-
-                            TextEntry::make('last_seen')
-                                ->label('Last Seen')
+                Section::make('📅 Timestamps')
+                    ->schema([
+                        Grid::make(2)->schema([
+                            TextEntry::make('created_at')
+                                ->label('Created At')
                                 ->dateTime('d M Y, h:i A')
                                 ->badge()
-                                ->color('gray'),
-                        ])
-                        ->columnSpan(1),
-                    ]),
-                ])
-                ->columns(3)
-                ->collapsible(),
+                                ->color('success'),
 
-            Section::make('📅 Timestamps')
-                ->schema([
-                    Grid::make(2)->schema([
-                        TextEntry::make('created_at')
-                            ->label('Created At')
-                            ->dateTime('d M Y, h:i A')
-                            ->badge()
-                            ->color('success'),
-
-                        TextEntry::make('updated_at')
-                            ->label('Last Updated')
-                            ->dateTime('d M Y, h:i A')
-                            ->badge()
-                            ->color('warning'),
-                    ]),
-                ])
-                ->columns(2)
-                ->collapsed(),
-        ]);
-}
+                            TextEntry::make('updated_at')
+                                ->label('Last Updated')
+                                ->dateTime('d M Y, h:i A')
+                                ->badge()
+                                ->color('warning'),
+                        ]),
+                    ])
+                    ->columns(2)
+                    ->collapsed(),
+            ]);
+    }
 
 
     public static function getPages(): array

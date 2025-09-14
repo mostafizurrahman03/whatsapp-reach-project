@@ -13,6 +13,13 @@ use Illuminate\Database\Eloquent\Builder;
 
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\Grid;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\IconEntry;
+use Filament\Infolists\Components\Group;
 
 class BulkMediaMessageResource extends Resource
 {
@@ -138,7 +145,9 @@ class BulkMediaMessageResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -146,6 +155,118 @@ class BulkMediaMessageResource extends Resource
                 ]),
             ]);
     }
+
+    
+
+    public static function infolist(Infolist $infolist): Infolist
+{
+    return $infolist
+        ->schema([
+            // Message & Recipients Section in two columns
+            Section::make('💬 Message & Recipients')
+                ->description('Details of the message, attachment, and recipients.')
+                ->icon('heroicon-o-chat-bubble-left-right')
+                ->schema([
+                    Grid::make(2)->schema([
+                        // Left column: Message + Recipients
+                        Group::make([
+                            TextEntry::make('device.phone_number')
+                                ->label('Sender Number')
+                                ->placeholder('N/A')
+                                ->badge()
+                                ->color('success'),
+
+                            TextEntry::make('message')
+                                ->label('Message Content')
+                                ->markdown()
+                                ->copyable()
+                                ->copyMessage('Message copied!')
+                                ->color('gray'),
+
+                             ImageEntry::make('media_url')
+                                ->label('Attachment')
+                                ->disk('public')
+                                ->height(120)
+                                ->width(120)
+                                ->circular(false)
+                                ->url(fn($record) => $record->media_url ? asset('storage/' . $record->media_url) : null)
+                                ->openUrlInNewTab(),
+                            TextEntry::make('caption')
+                                ->label('Caption')
+                                ->placeholder('N/A')
+                                ->color('primary'),    
+
+                            
+                        ])->columnSpan(1),
+
+                        // Right column: Attachment + Caption + Sent Status
+                        Group::make([
+                            // ImageEntry::make('media_url')
+                            //     ->label('Attachment')
+                            //     ->disk('public')
+                            //     ->height(120)
+                            //     ->width(120)
+                            //     ->circular(false)
+                            //     ->url(fn($record) => $record->media_url ? asset('storage/' . $record->media_url) : null)
+                            //     ->openUrlInNewTab(),
+                            TextEntry::make('recipients')
+                                ->label('Recipients')
+                                ->getStateUsing(fn($record) => $record->recipients->pluck('number')->implode(', '))
+                                ->copyable()
+                                ->copyMessage('Recipients copied!')
+                                ->color('primary'),
+
+                            IconEntry::make('is_sent')
+                                ->label('Sent Status')
+                                ->boolean()
+                                ->trueIcon('heroicon-o-check-circle')
+                                ->falseIcon('heroicon-o-x-circle')
+                                ->trueColor('success')
+                                ->falseColor('danger'),
+                        ])->columnSpan(1),
+                    ]),
+                ])
+                ->columns(2)
+                ->collapsible(),
+              // Right Column: Recipients
+                Section::make('📇 Recipients')
+                    ->description('All recipients of this bulk message.')
+                    ->icon('heroicon-o-users')
+                    ->schema([
+                        TextEntry::make('recipients')
+                            ->label('Recipients')
+                            ->getStateUsing(fn($record) => $record->recipients->pluck('number')->implode(', '))
+                            ->columnSpanFull()
+                            ->copyable()
+                            ->copyMessage('Recipients copied!')
+                            ->color('gray'),
+                    ])
+                    ->columns(1)
+                    ->collapsed(),
+            // Timestamps Section
+            Section::make('📅 Timestamps')
+                ->description('Created and last updated times.')
+                ->icon('heroicon-o-calendar')
+                ->schema([
+                    Grid::make(2)->schema([
+                        TextEntry::make('created_at')
+                            ->label('Created At')
+                            ->dateTime('d M Y, h:i A')
+                            ->badge()
+                            ->color('success'),
+
+                        TextEntry::make('updated_at')
+                            ->label('Last Updated')
+                            ->dateTime('d M Y, h:i A')
+                            ->badge()
+                            ->color('warning'),
+                    ]),
+                ])
+                ->columns(2)
+                ->collapsed(),
+        ]);
+}
+
 
     public static function getRelations(): array
     {

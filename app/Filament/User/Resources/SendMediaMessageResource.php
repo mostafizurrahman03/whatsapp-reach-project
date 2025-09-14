@@ -16,6 +16,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\RichEditor;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\IconEntry;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\Grid;
 
 class SendMediaMessageResource extends Resource
 {
@@ -119,15 +125,27 @@ class SendMediaMessageResource extends Resource
 
                 Tables\Columns\TextColumn::make('caption')->label('Caption')->limit(25),
                 Tables\Columns\IconColumn::make('is_sent')->boolean()->label('Sent'),
-                Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Created At')    ->sortable(), 
+                Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Created At')      ->sortable(), 
+                // Tables\Columns\TextColumn::make('action')
+                //     ->label('Action')
+                //     ->formatStateUsing(fn ($record) => 'View | Edit | Delete')
+                //     ->html() 
+                //     // ->extraAttributes(['class' => 'text-center']) 
+                //     ->alignCenter() 
+                //     ->sortable(false)
+                //     ->searchable(false),
+
 
             ])
             ->filters([
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
+            ->actionsColumnLabel('Action')
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -138,6 +156,103 @@ class SendMediaMessageResource extends Resource
     // {
     //     return static::getUrl('create'); // default index page, but we define create page
     // }
+
+    
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('Media Message Details')
+                    ->description('Detailed information about this media message.')
+                    ->schema([
+                        Grid::make(2)->schema([
+
+                            // Sender Number
+                            TextEntry::make('device.phone_number')
+                                ->label('Sender Number')
+                                ->placeholder('N/A')
+                                ->badge()
+                                ->color('success'),
+
+                            // Receiver Number
+                            TextEntry::make('number')
+                                ->label('Receiver Number')
+                                ->placeholder('N/A')
+                                ->badge()
+                                ->color('primary'),
+
+                            // Message
+                            TextEntry::make('message')
+                                ->label('Message')
+                                ->markdown()
+                                ->copyable()
+                                ->copyMessage('Message copied!')
+                                ->columnSpanFull(),
+
+                            // Media (Image/File Preview)
+                            ImageEntry::make('media_url')
+                                ->label('Attachment')
+                                ->disk('public')
+                                ->height(200)
+                                ->hidden(fn ($record) => empty($record->media_url))
+                                ->columnSpanFull(),
+
+                            // Caption
+                            TextEntry::make('caption')
+                                ->label('Caption')
+                                ->placeholder('No caption')
+                                ->color('gray')
+                                ->columnSpanFull(),
+
+                            // Sent Status
+                            IconEntry::make('is_sent')
+                                ->label('Sent Status')
+                                ->boolean()
+                                ->trueIcon('heroicon-o-check-circle')
+                                ->falseIcon('heroicon-o-x-circle')
+                                ->trueColor('success')
+                                ->falseColor('danger'),
+
+                            // Created & Updated
+                            // TextEntry::make('created_at')
+                            //     ->label('Created At')
+                            //     ->dateTime('d M, Y h:i A')
+                            //     ->color('warning'),
+
+                            // TextEntry::make('updated_at')
+                            //     ->label('Last Updated')
+                            //     ->dateTime('d M, Y h:i A')
+                            //     ->color('info'),
+                        ]),
+                    ])
+                    ->icon('heroicon-o-photo')
+                    ->collapsible(),
+                
+                 // Timestamps Section
+                Section::make('📅 Timestamps')
+                    ->description('Created and last updated times.')
+                    ->icon('heroicon-o-calendar')
+                    ->schema([
+                        Grid::make(2)->schema([
+                            TextEntry::make('created_at')
+                                ->label('Created At')
+                                ->dateTime('d M Y, h:i A')
+                                ->badge()
+                                ->color('success'),
+
+                            TextEntry::make('updated_at')
+                                ->label('Last Updated')
+                                ->dateTime('d M Y, h:i A')
+                                ->badge()
+                                ->color('warning'),
+                        ]),
+                    ])
+                    ->columns(2)
+                    ->collapsed(),
+            ]);
+    }
+
 
     public static function getRelations(): array
     {

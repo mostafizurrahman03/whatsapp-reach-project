@@ -14,7 +14,7 @@ class CreateSendMessage extends CreateRecord
 
     protected function handleRecordCreation(array $data): SendMessage
     {
-        // 1. Logged-in user অনুযায়ী message save
+        // 1. Message save according to Logged-in user
         $message = SendMessage::create([
             'user_id'   => auth()->id(),
             'device_id' => $data['device_id'],

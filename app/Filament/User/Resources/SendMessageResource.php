@@ -15,6 +15,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\IconEntry;
+use Filament\Infolists\Components\Grid;
 
 class SendMessageResource extends Resource
 {
@@ -123,8 +128,11 @@ class SendMessageResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
+            ->actionsColumnLabel('Action')
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -135,6 +143,82 @@ class SendMessageResource extends Resource
     // {
     //     return static::getUrl('create'); // default index page, but we define create page
     // }
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Section::make('Message Details')
+                    ->description('Here are the details of your sent message.')
+                    ->schema([
+                        Grid::make(2)->schema([
+                       
+                            TextEntry::make('device.phone_number')
+                                ->label('Sender Number')
+                                ->placeholder('N/A')
+                                ->badge()
+                                ->color('success'),
+
+                            TextEntry::make('number')
+                                ->label('Receiver Number')
+                                ->placeholder('N/A')
+                                ->badge()
+                                ->color('primary'),
+
+                            // Message
+                            TextEntry::make('message')
+                                ->label('Message Content')
+                                ->columnSpanFull()
+                                ->markdown()
+                                ->copyable()
+                                ->copyMessage('Message copied!')
+                                ->color('gray'),
+
+                            // Sent status 
+                            IconEntry::make('is_sent')
+                                ->label('Sent Status')
+                                ->boolean()
+                                ->trueIcon('heroicon-o-check-circle')
+                                ->falseIcon('heroicon-o-x-circle')
+                                ->trueColor('success')
+                                ->falseColor('danger'),
+
+                            // Created & Updated
+                            // TextEntry::make('created_at')
+                            //     ->label('Created At')
+                            //     ->dateTime('d M, Y h:i A')
+                            //     ->color('warning'),
+
+                            // TextEntry::make('updated_at')
+                            //     ->label('Last Updated')
+                            //     ->dateTime('d M, Y h:i A')
+                            //     ->color('info'),
+                        ]),
+                    ])
+                    ->collapsible()
+                    ->icon('heroicon-o-chat-bubble-left-right'),
+                // Timestamps Section
+                Section::make('📅 Timestamps')
+                    ->description('Created and last updated times.')
+                    ->icon('heroicon-o-calendar')
+                    ->schema([
+                        Grid::make(2)->schema([
+                            TextEntry::make('created_at')
+                                ->label('Created At')
+                                ->dateTime('d M Y, h:i A')
+                                ->badge()
+                                ->color('success'),
+
+                            TextEntry::make('updated_at')
+                                ->label('Last Updated')
+                                ->dateTime('d M Y, h:i A')
+                                ->badge()
+                                ->color('warning'),
+                        ]),
+                    ])
+                    ->columns(2)
+                    ->collapsed(),
+            ]);
+    }
 
     public static function getRelations(): array
     {

@@ -228,6 +228,7 @@ class MyWhatsappDeviceResource extends Resource
                     }),
 
             ])
+            ->actionsColumnLabel('Action')
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
