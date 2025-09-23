@@ -16,101 +16,120 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\Group;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileResource extends Resource
 {
     protected static ?string $model = Profile::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user';
-
     protected static ?string $navigationLabel = 'Profile';
     protected static ?string $pluralLabel = 'Profiles';
     protected static ?string $modelLabel = 'Profile';
     protected static ?string $navigationGroup = 'Setting';
     protected static ?int $navigationSort = 6;
 
-    // Form schema (Create / Edit)
+    /**
+     * শুধু logged-in user এর প্রোফাইল query হবে
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('user_id', Auth::id());
+    }
+
+    // ---------------- FORM ----------------
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->label('User')
-                    ->required(),
+                Forms\Components\Hidden::make('user_id')
+                    ->default(fn () => Auth::id()),
+
+                // Users table fields
+                Forms\Components\TextInput::make('name')
+                    ->label('Full Name')
+                    ->required()
+                    ->maxLength(255),
+
+                Forms\Components\TextInput::make('email')
+                    ->label('Email Address')
+                    ->email()
+                    ->required()
+                    ->maxLength(255),
+
+                // Profile table fields
                 Forms\Components\Textarea::make('bio')
                     ->label('Bio')
                     ->rows(3),
+
                 Forms\Components\FileUpload::make('profile_picture')
                     ->label('Profile Picture')
                     ->image()
                     ->directory('profile_pictures'),
+
                 Forms\Components\Toggle::make('is_online')
                     ->label('Online Status'),
+
                 Forms\Components\DateTimePicker::make('last_seen')
                     ->label('Last Seen'),
             ]);
     }
 
-    // Table schema (List)
+    // ---------------- TABLE ----------------
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.name')->label('User')->sortable(),
-                Tables\Columns\TextColumn::make('bio')->limit(30),
                 Tables\Columns\ImageColumn::make('profile_picture')->label('Picture'),
-                Tables\Columns\IconColumn::make('is_online')
-                    ->boolean()
-                    ->label('Online'),
-                Tables\Columns\TextColumn::make('last_seen')
-                    ->dateTime('d M Y H:i')
-                    ->label('Last Seen'),
+                Tables\Columns\TextColumn::make('name')->label('Name')->sortable(),
+                Tables\Columns\TextColumn::make('email')->label('Email'),
+                Tables\Columns\TextColumn::make('bio')->limit(30),
+                Tables\Columns\IconColumn::make('is_online')->boolean()->label('Online'),
+                Tables\Columns\TextColumn::make('last_seen')->dateTime('d M Y H:i')->label('Last Seen'),
                 Tables\Columns\TextColumn::make('created_at')->dateTime('d M Y'),
-            ])
-            ->filters([
-                //
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                
+                // Tables\Actions\DeleteAction::make(),
             ])
             ->actionsColumnLabel('Action')
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
-            ]);
+            ->bulkActions([]);
     }
 
-    public static function getRelations(): array
-    {
-        return [];
-    }
-
-    // Infolist schema for view page
+    // ---------------- INFOLIST ----------------
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
             ->schema([
-                Section::make('👤 Profile Information')
-                    ->description('Complete details of the selected user profile')
+                Section::make('Profile Information')
+                    ->icon('heroicon-o-user')
+                    ->description('Complete details of your profile')
                     ->schema([
                         Grid::make(3)->schema([
 
-                            // (Left)
+                            // Left: Profile Picture
                             ImageEntry::make('profile_picture')
                                 ->label('')
                                 ->circular()
                                 ->height(180)
                                 ->columnSpan(1),
 
-                            // (Middle)
+                            // Middle: Name, Email, Bio
                             Group::make([
-                                TextEntry::make('user.name')
+                                TextEntry::make('name')
                                     ->label('Full Name')
                                     ->weight('bold')
                                     ->size('xl')
-                                    ->icon('heroicon-o-user'),
+                                    ->icon('heroicon-o-user')
+                                    ->getStateUsing(fn ($record) => $record->user->name ?? ''),
+
+                                TextEntry::make('email')
+                                    ->label('Email')
+                                    ->icon('heroicon-o-envelope')
+                                    ->getStateUsing(fn ($record) => $record->user->email ?? ''),
 
                                 TextEntry::make('bio')
                                     ->label('Bio')
@@ -118,10 +137,9 @@ class ProfileResource extends Resource
                                     ->placeholder('No bio available')
                                     ->columnSpanFull()
                                     ->icon('heroicon-o-chat-bubble-left-ellipsis'),
-                            ])
-                            ->columnSpan(1),
+                            ])->columnSpan(1),
 
-                            // Online / Last Seen (Right)
+                            // Right: Online & Last Seen
                             Group::make([
                                 IconEntry::make('is_online')
                                     ->boolean()
@@ -134,14 +152,14 @@ class ProfileResource extends Resource
                                     ->dateTime('d M Y, h:i A')
                                     ->badge()
                                     ->color('gray'),
-                            ])
-                            ->columnSpan(1),
+                            ])->columnSpan(1),
                         ]),
                     ])
                     ->columns(3)
                     ->collapsible(),
 
-                Section::make('📅 Timestamps')
+                Section::make('Timestamps')
+                    ->icon('heroicon-o-calendar')
                     ->schema([
                         Grid::make(2)->schema([
                             TextEntry::make('created_at')
@@ -162,6 +180,24 @@ class ProfileResource extends Resource
             ]);
     }
 
+    // Navigation to view page
+    public static function getNavigationUrl(): string
+    {
+        // Get current user's profile
+        $profile = Profile::where('user_id', auth()->id())->first();
+        
+        if ($profile) {
+            return static::getUrl('view', ['record' => $profile->id]);
+        }
+        
+        // If no profile exists, go to create page
+        return static::getUrl('create');
+    }
+
+    public static function shouldSkipAuthorization(): bool
+    {
+        return true;
+    }
 
     public static function getPages(): array
     {

@@ -15,6 +15,8 @@ class Profile extends Model
         'profile_picture',
         'last_seen',
         'is_online',
+        'name',
+        'email',
     ];
 
     // relation with User
@@ -22,5 +24,6 @@ class Profile extends Model
     {
         return $this->belongsTo(User::class);
     }
+    
 }
 

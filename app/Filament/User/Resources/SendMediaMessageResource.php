@@ -230,7 +230,7 @@ class SendMediaMessageResource extends Resource
                     ->collapsible(),
                 
                  // Timestamps Section
-                Section::make('📅 Timestamps')
+                Section::make('Timestamps')
                     ->description('Created and last updated times.')
                     ->icon('heroicon-o-calendar')
                     ->schema([

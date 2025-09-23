@@ -171,7 +171,7 @@ class BulkMediaMessageResource extends Resource
         return $infolist
             ->schema([
                 // Message & Recipients Section in two columns
-                Section::make('💬 Message & Recipients')
+                Section::make('Message & Recipients')
                     ->description('Details of the message, attachment, and recipients.')
                     ->icon('heroicon-o-chat-bubble-left-right')
                     ->schema([
@@ -237,7 +237,7 @@ class BulkMediaMessageResource extends Resource
                     ->columns(2)
                     ->collapsible(),
                 // Right Column: Recipients
-                    Section::make('📇 Recipients')
+                    Section::make('Recipients')
                         ->description('All recipients of this bulk message.')
                         ->icon('heroicon-o-users')
                         ->schema([
@@ -252,7 +252,7 @@ class BulkMediaMessageResource extends Resource
                         ->columns(1)
                         ->collapsed(),
                 // Timestamps Section
-                Section::make('📅 Timestamps')
+                Section::make('Timestamps')
                     ->description('Created and last updated times.')
                     ->icon('heroicon-o-calendar')
                     ->schema([

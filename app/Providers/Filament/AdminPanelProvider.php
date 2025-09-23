@@ -28,7 +28,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandName('WhatsReach') 
+            ->brandName('WhatsReach')
+            ->profile() 
             ->colors([
                 'primary' => Color::Green,
             ])

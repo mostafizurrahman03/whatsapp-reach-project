@@ -197,7 +197,7 @@ class SendMessageResource extends Resource
                     ->collapsible()
                     ->icon('heroicon-o-chat-bubble-left-right'),
                 // Timestamps Section
-                Section::make('📅 Timestamps')
+                Section::make('Timestamps')
                     ->description('Created and last updated times.')
                     ->icon('heroicon-o-calendar')
                     ->schema([
