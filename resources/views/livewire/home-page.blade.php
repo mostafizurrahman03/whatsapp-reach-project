@@ -83,4 +83,7 @@
             </div>
         </div>
     </section>
+    <x-benefits-section />
+    <x-customers-love />
+    <x-faq />
 </div>
