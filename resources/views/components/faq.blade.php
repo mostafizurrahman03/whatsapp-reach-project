@@ -1,25 +1,43 @@
 <section class="bg-white py-16">
-    <div class="max-w-3xl mx-auto px-4">
-        <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 text-center">Frequently Asked Questions</h2>
-        <p class="text-center text-gray-600 mt-3 mb-10">Everything you need to know about using Whats‑Reach for WhatsApp automation.</p>
+        <div class="max-w-3xl mx-auto px-4">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 text-center">Frequently Asked Questions</h2>
+                <p class="text-center text-gray-600 mt-3 mb-10">Everything you need to know about using Whats‑Reach for WhatsApp automation.</p>
 
-        <div class="space-y-4">
-            <!-- FAQ 1 -->
+            <div class="space-y-4">
+                    <!-- FAQ 1 -->
             <details class="group bg-gray-50 p-4 sm:p-5 rounded-xl border border-gray-200 hover:border-[#0F7B71]/40 transition">
                 <summary class="cursor-pointer font-semibold text-gray-900 flex justify-between items-center gap-3">
+                    <!-- Left side with icon + text -->
                     <span class="inline-flex items-center gap-2 text-lg sm:text-xl">
                         <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-[#D6F8E8] text-[#0F7B71]">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                            </svg>
                         </span>
-                        How does Whats‑Reach work?
+                        How does Whats-Reach work?
                     </span>
-                    <span class="ml-2 text-[#0F7B71] text-3xl leading-none font-extrabold select-none group-open:hidden">+</span>
-                    <span class="ml-2 text-[#0F7B71] text-4xl leading-none font-extrabold select-none hidden group-open:inline">-</span>
+
+                    <!-- Toggle button -->
+                    <span class="ml-2 inline-flex h-8 w-8 items-center justify-center rounded-md bg-transparent group-hover:bg-[#D6F8E8] text-[#0F7B71] border border-[#0F7B71]/30 transition-colors duration-200">
+                        <!-- Plus icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-open:hidden" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                        </svg>
+                        <!-- Minus icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden group-open:inline" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
                 </summary>
-                <p class="mt-3 text-gray-600 text-sm leading-relaxed">
-                    Whats‑Reach securely connects to your WhatsApp number and lets you send broadcasts, schedule templates, and trigger automated flows. It’s built for reliability and scale while following WhatsApp best practices.
-                </p>
-            </details>
+
+            <!-- Hidden content -->
+            <p class="mt-3 text-gray-600 text-sm leading-relaxed">
+                Whats-Reach securely connects to your WhatsApp number and lets you send broadcasts,
+                schedule templates, and trigger automated flows. It’s built for reliability and scale
+                while following WhatsApp best practices.
+            </p>
+        </details>
+
 
             <!-- FAQ 2 -->
             <details class="group bg-gray-50 p-4 sm:p-5 rounded-xl border border-gray-200 hover:border-[#0F7B71]/40 transition">
@@ -30,8 +48,14 @@
                         </span>
                         Can I send media files?
                     </span>
-                    <span class="ml-2 text-[#0F7B71] text-3xl leading-none font-extrabold select-none group-open:hidden">+</span>
-                    <span class="ml-2 text-[#0F7B71] text-4xl leading-none font-extrabold select-none hidden group-open:inline">-</span>
+                    <span class="ml-2 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-transparent group-hover:bg-[#D6F8E8] text-[#0F7B71] border border-[#0F7B71]/30 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-open:hidden" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden group-open:inline" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
                 </summary>
                 <p class="mt-3 text-gray-600 text-sm leading-relaxed">
                     Yes. You can send images, PDFs, audio, and videos with captions. For bulk campaigns, we recommend optimized file sizes to ensure fast, reliable delivery.
@@ -47,8 +71,14 @@
                         </span>
                         Is it safe to use?
                     </span>
-                    <span class="ml-2 text-[#0F7B71] text-3xl leading-none font-extrabold select-none group-open:hidden">+</span>
-                    <span class="ml-2 text-[#0F7B71] text-4xl leading-none font-extrabold select-none hidden group-open:inline">-</span>
+                    <span class="ml-2 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-transparent group-hover:bg-[#D6F8E8] text-[#0F7B71] border border-[#0F7B71]/30 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-open:hidden" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden group-open:inline" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
                 </summary>
                 <p class="mt-3 text-gray-600 text-sm leading-relaxed">
                     Absolutely. We use secure connections and follow WhatsApp’s policy guidelines. You control opt‑in/opt‑out preferences, and audit logs keep your team compliant.
@@ -64,8 +94,14 @@
                         </span>
                         Do I need a developer to get started?
                     </span>
-                    <span class="ml-2 text-[#0F7B71] text-3xl leading-none font-extrabold select-none group-open:hidden">+</span>
-                    <span class="ml-2 text-[#0F7B71] text-4xl leading-none font-extrabold select-none hidden group-open:inline">-</span>
+                    <span class="ml-2 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-transparent group-hover:bg-[#D6F8E8] text-[#0F7B71] border border-[#0F7B71]/30 transition-colors duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-open:hidden" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden group-open:inline" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clip-rule="evenodd" />
+                        </svg>
+                    </span>
                 </summary>
                 <p class="mt-3 text-gray-600 text-sm leading-relaxed">
                     No developer is required. Connect your device, import your contacts, and start sending in minutes. For advanced workflows, our team can help with setup.

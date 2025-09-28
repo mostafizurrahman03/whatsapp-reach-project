@@ -14,27 +14,27 @@
         <div class="flex h-16 items-center justify-between">
             <!-- Brand -->
             <a href="{{ route('home') }}" class="flex items-center gap-2 group">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-green-600 text-white font-bold">WR</span>
-                <span class="text-2xl font-extrabold tracking-tight text-gray-900 group-hover:text-green-700 transition-colors">Whats-Reach</span>
+                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[#0F7B71] text-white font-bold">WR</span>
+                <span class="text-2xl font-extrabold tracking-tight text-gray-900 group-hover:text-[#0F7B71] transition-colors">Whats-Reach</span>
             </a>
 
             <!-- Desktop Nav -->
             <div class="hidden sm:flex items-center gap-6">
                 <ul class="flex items-center gap-6 text-lg font-medium">
                     <li>
-                        <a href="{{ route('features') }}" class="px-1.5 py-1 rounded transition-colors {{ request()->routeIs('features') ? 'text-green-700' : 'text-gray-700 hover:text-green-700' }}">Whatsapp Integrations</a>
+                        <a href="{{ route('features') }}" class="px-1.5 py-1 rounded transition-colors {{ request()->routeIs('features') ? 'text-[#0F7B71]' : 'text-gray-700 hover:text-[#0F7B71]' }}">Whatsapp Integrations</a>
                     </li>
                     <li>
-                        <a href="{{ route('features') }}" class="px-1.5 py-1 rounded transition-colors {{ request()->routeIs('features') ? 'text-green-700' : 'text-gray-700 hover:text-green-700' }}">Features</a>
+                        <a href="{{ route('features') }}" class="px-1.5 py-1 rounded transition-colors {{ request()->routeIs('features') ? 'text-[#0F7B71]' : 'text-gray-700 hover:text-[#0F7B71]' }}">Features</a>
                     </li>
                     <li>
-                        <a href="{{ route('pricing') }}" class="px-1.5 py-1 rounded transition-colors {{ request()->routeIs('pricing') ? 'text-green-700' : 'text-gray-700 hover:text-green-700' }}">Pricing</a>
+                        <a href="{{ route('pricing') }}" class="px-1.5 py-1 rounded transition-colors {{ request()->routeIs('pricing') ? 'text-[#0F7B71]' : 'text-gray-700 hover:text-[#0F7B71]' }}">Pricing</a>
                     </li>
                     <li>
-                        <a href="{{ route('contact') }}" class="px-1.5 py-1 rounded transition-colors {{ request()->routeIs('contact') ? 'text-green-700' : 'text-gray-700 hover:text-green-700' }}">Contact Us</a>
+                        <a href="{{ route('contact') }}" class="px-1.5 py-1 rounded transition-colors {{ request()->routeIs('contact') ? 'text-[#0F7B71]' : 'text-gray-700 hover:text-[#0F7B71]' }}">Contact Us</a>
                     </li>
                 </ul>
-                <a href="{{ route('features') }}" class="inline-flex items-center gap-2 rounded-lg bg-green-600 px-3.5 py-2 text-white text-lg font-semibold shadow hover:bg-green-700 transition-colors">
+                <a href="{{ route('features') }}" class="inline-flex items-center gap-2 rounded-lg bg-[#0F7B71] px-3.5 py-2 text-white text-lg font-semibold shadow hover:bg-[#0F7B71]/90 transition-colors">
                     Get Started
                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                 </a>
@@ -46,11 +46,11 @@
                     <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                 </summary>
                 <div class="absolute right-0 mt-2 w-48 rounded-lg border border-gray-200 bg-white shadow-lg py-2">
-                    <a href="{{ route('features') }}" class="block px-4 py-2 text-sm {{ request()->routeIs('features') ? 'text-green-700' : 'text-gray-700 hover:bg-gray-50' }}">Features</a>
-                    <a href="{{ route('pricing') }}" class="block px-4 py-2 text-sm {{ request()->routeIs('pricing') ? 'text-green-700' : 'text-gray-700 hover:bg-gray-50' }}">Pricing</a>
-                    <a href="{{ route('contact') }}" class="block px-4 py-2 text-sm {{ request()->routeIs('contact') ? 'text-green-700' : 'text-gray-700 hover:bg-gray-50' }}">Contact</a>
+                    <a href="{{ route('features') }}" class="block px-4 py-2 text-sm {{ request()->routeIs('features') ? 'text-[#0F7B71]' : 'text-gray-700 hover:bg-gray-50' }}">Features</a>
+                    <a href="{{ route('pricing') }}" class="block px-4 py-2 text-sm {{ request()->routeIs('pricing') ? 'text-[#0F7B71]' : 'text-gray-700 hover:bg-gray-50' }}">Pricing</a>
+                    <a href="{{ route('contact') }}" class="block px-4 py-2 text-sm {{ request()->routeIs('contact') ? 'text-[#0F7B71]' : 'text-gray-700 hover:bg-gray-50' }}">Contact</a>
                     <div class="px-4 pt-2">
-                        <a href="{{ route('features') }}" class="w-full inline-flex items-center justify-center gap-2 rounded-md bg-green-600 px-3 py-2 text-white text-sm font-semibold hover:bg-green-700">Start</a>
+                        <a href="{{ route('features') }}" class="w-full inline-flex items-center justify-center gap-2 rounded-md bg-[#0F7B71] px-3 py-2 text-white text-sm font-semibold hover:bg-[#0F7B71]/90">Start</a>
                     </div>
                 </div>
             </details>
@@ -70,7 +70,7 @@
             <!-- Brand -->
             <div>
                 <div class="flex items-center gap-2 mb-3">
-                    <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-green-600 text-white font-bold">WR</span>
+                    <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[#0F7B71] text-white font-bold">WR</span>
                     <span class="font-extrabold text-white">Whats-Reach</span>
                 </div>
                 <p class="text-sm text-gray-400">WhatsApp bulk messaging made simple, reliable, and scalable for modern teams.</p>

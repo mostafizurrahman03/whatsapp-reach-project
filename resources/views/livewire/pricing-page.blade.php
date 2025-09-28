@@ -9,8 +9,14 @@
             <div class="mt-10 grid gap-6 md:grid-cols-3">
                 <!-- Basic -->
                 <div class="relative rounded-2xl bg-white ring-1 ring-gray-200 shadow-sm hover:shadow-md transition p-6 flex flex-col">
-                    <div class="mb-2 text-sm font-semibold text-[#128C7E]">Basic</div>
+                    <!-- Top header -->
                     <div class="mb-5">
+                        <div class="rounded-xl bg-[#0F7B71] text-white text-center px-4 py-3">
+                            <div class="text-sm font-bold uppercase tracking-wide">Basic</div>
+                            <a href="{{ route('contact') }}" class="text-xs underline underline-offset-2 opacity-90 hover:opacity-100">30 days free trial</a>
+                        </div>
+                    </div>
+                    <div class="mb-5 text-center">
                         <span class="text-4xl font-extrabold text-gray-900">19</span>
                         <span class="text-sm text-gray-500">/month</span>
                     </div>
@@ -34,14 +40,20 @@
                             Bulk send
                         </li>
                     </ul>
-                    <a href="{{ route('filament.user.auth.login') }}" class="mt-auto inline-flex items-center justify-center rounded-full bg-[#0F7B71] text-white px-5 py-2.5 font-semibold shadow hover:bg-[#0c6a62] transition">Get Started</a>
+                    <a href="{{ route('filament.user.auth.register') }}" class="mt-auto inline-flex items-center justify-center rounded-lg border border-[#0F7B71] text-[#0F7B71] bg-white px-5 py-2.5 font-semibold shadow hover:bg-[#0F7B71] hover:text-white transition">Get Started</a>
                 </div>
 
                 <!-- Standard (Most Popular) -->
                 <div class="relative rounded-2xl bg-white ring-2 ring-[#0F7B71] shadow-md transition p-6 flex flex-col">
-                    <span class="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center rounded-full bg-[#D6F8E8] text-[#075E54] px-3 py-1 text-xs font-bold ring-1 ring-[#128C7E]/30">Most Popular</span>
-                    <p class="text-sm text-gray-500 mb-4">For growing teams</p>
+                    <!-- Top header -->
                     <div class="mb-5">
+                        <div class="rounded-xl bg-[#0F7B71] text-white text-center px-4 py-3">
+                            <div class="text-sm font-bold uppercase tracking-wide">Standard</div>
+                            <a href="{{ route('contact') }}" class="text-xs underline underline-offset-2 opacity-90 hover:opacity-100">30 days free trial</a>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-4">For growing teams</p>
+                    <div class="mb-5 text-center">
                         <span class="text-4xl font-extrabold text-gray-900">49</span>
                         <span class="text-sm text-gray-500">/month</span>
                     </div>
@@ -65,14 +77,20 @@
                             Templates & scheduling
                         </li>
                     </ul>
-                    <a href="{{ route('home') }}" class="mt-auto inline-flex items-center justify-center rounded-full bg-[#0F7B71] text-white px-5 py-2.5 font-semibold shadow hover:bg-[#0c6a62] transition">Get Started</a>
+                    <a href="{{ route('filament.user.auth.register') }}" class="mt-auto inline-flex items-center justify-center rounded-lg border border-[#0F7B71] text-[#0F7B71] bg-white px-5 py-2.5 font-semibold shadow hover:bg-[#0F7B71] hover:text-white transition">Get Started</a>
                 </div>
 
                 <!-- Pro -->
                 <div class="relative rounded-2xl bg-white ring-1 ring-gray-200 shadow-sm hover:shadow-md transition p-6 flex flex-col">
-                    <div class="mb-2 text-sm font-semibold text-[#128C7E]">Pro</div>
-                    <p class="text-sm text-gray-500 mb-4">For enterprises</p>
+                    <!-- Top header -->
                     <div class="mb-5">
+                        <div class="rounded-xl bg-[#0F7B71] text-white text-center px-4 py-3">
+                            <div class="text-sm font-bold uppercase tracking-wide">Pro</div>
+                            <a href="{{ route('filament.user.auth.register') }}" class="text-xs underline underline-offset-2 opacity-90 hover:opacity-100">30 days free trial</a>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-4">For enterprises</p>
+                    <div class="mb-5 text-center">
                         <span class="text-4xl font-extrabold text-gray-900">99</span>
                         <span class="text-sm text-gray-500">/month</span>
                     </div>
@@ -96,7 +114,7 @@
                             Advanced automation
                         </li>
                     </ul>
-                    <a href="{{ route('home') }}" class="mt-auto inline-flex items-center justify-center rounded-full bg-[#128C7E] text-white px-5 py-2.5 font-semibold shadow hover:bg-[#0f7b71] transition">Get Started</a>
+                    <a href="{{ route('home') }}" class="mt-auto inline-flex items-center justify-center rounded-lg border border-[#0F7B71] text-[#0F7B71] bg-white px-5 py-2.5 font-semibold shadow hover:bg-[#0F7B71] hover:text-white transition">Get Started</a>
                 </div>
             </div>
         </div>

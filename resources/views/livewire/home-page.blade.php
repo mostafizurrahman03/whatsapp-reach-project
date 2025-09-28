@@ -1,18 +1,18 @@
 <div class="relative overflow-hidden">
     <!-- Hero Section -->
-    <section class="bg-gradient-to-br from-green-50 via-white to-emerald-50">
+    <section class="bg-gradient-to-br from-[#0F7B71]/10 via-white to-[#0F7B71]/10">
         <div class="max-w-7xl mx-auto px-6 py-16 sm:py-24 grid lg:grid-cols-2 gap-10 items-center">
             <div>
-                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">Whats-Reach</span>
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0F7B71]/10 text-[#0F7B71] text-xs font-semibold">Whats-Reach</span>
                 <h1 class="mt-4 text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900">
                     WhatsApp Bulk Messaging<br>
-                    <span class="text-green-600">Fast. Reliable. Scalable.</span>
+                    <span class="text-[#0F7B71]">Fast. Reliable. Scalable.</span>
                 </h1>
                 <p class="mt-5 text-lg text-gray-600 max-w-xl">
                     Reach thousands on WhatsApp with personalized campaigns, automation, and real-time insights — all in one place.
                 </p>
                 <div class="mt-8 flex flex-col sm:flex-row gap-3">
-                    <a href="{{ route('features') }}" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-green-600 hover:bg-green-700 text-white font-semibold shadow">
+                    <a href="{{ route('features') }}" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-[#0F7B71] hover:bg-[#0F7B71]/90 text-white font-semibold shadow">
                         Get Started
                         <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                     </a>
@@ -23,10 +23,10 @@
                 </div>
                 <div class="mt-8 flex items-center gap-6 text-sm text-gray-500">
                     <div class="flex items-center gap-2">
-                        <span class="inline-block h-2.5 w-2.5 rounded-full bg-green-500"></span> Trusted delivery
+                        <span class="inline-block h-2.5 w-2.5 rounded-full bg-[#0F7B71]"></span> Trusted delivery
                     </div>
                     <div class="hidden sm:flex items-center gap-2">
-                        <span class="inline-block h-2.5 w-2.5 rounded-full bg-emerald-500"></span> GDPR-friendly
+                        <span class="inline-block h-2.5 w-2.5 rounded-full bg-[#0F7B71]"></span> GDPR-friendly
                     </div>
                 </div>
             </div>
@@ -34,13 +34,13 @@
             <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-6">
                 <div class="flex items-center justify-between pb-4 border-b">
                     <div class="flex items-center gap-3">
-                        <div class="h-9 w-9 rounded-lg bg-green-600 text-white flex items-center justify-center font-bold">WR</div>
+                        <div class="h-9 w-9 rounded-lg bg-[#0F7B71] text-white flex items-center justify-center font-bold">WR</div>
                         <div>
                             <div class="font-semibold">Campaign: Promo Week</div>
                             <div class="text-xs text-gray-500">Scheduled · 10:00 AM</div>
                         </div>
                     </div>
-                    <span class="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700">Active</span>
+                    <span class="text-xs px-2 py-1 rounded-full bg-[#0F7B71]/10 text-[#0F7B71]">Active</span>
                 </div>
                 <div class="grid sm:grid-cols-3 text-center divide-y sm:divide-y-0 sm:divide-x mt-4">
                     <div class="py-3">
@@ -48,11 +48,11 @@
                         <div class="text-xs text-gray-500">Sent</div>
                     </div>
                     <div class="py-3">
-                        <div class="text-2xl font-extrabold text-green-600">96%</div>
+                        <div class="text-2xl font-extrabold text-[#0F7B71]">96%</div>
                         <div class="text-xs text-gray-500">Delivered</div>
                     </div>
                     <div class="py-3">
-                        <div class="text-2xl font-extrabold text-emerald-600">82%</div>
+                        <div class="text-2xl font-extrabold text-[#0F7B71]">82%</div>
                         <div class="text-xs text-gray-500">Read</div>
                     </div>
                 </div>
@@ -64,26 +64,34 @@
     </section>
 
     <!-- Quick Features -->
-    <section class="py-12">
-        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-6">
-            <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
-                <div class="w-11 h-11 rounded-lg bg-green-50 text-green-600 flex items-center justify-center text-2xl mb-3">💬</div>
-                <h3 class="font-semibold mb-1">Bulk Messaging</h3>
-                <p class="text-gray-600 text-sm">Send thousands with CSV import, variables, and media.</p>
+    <section class="py-14 bg-gradient-to-b from-white to-[#0F7B71]/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="mb-10 text-center">
+                <span class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-[#0F7B71]/10 text-[#0F7B71] text-xs font-semibold">Core capabilities</span>
+                <h2 class="mt-2 text-2xl sm:text-3xl font-extrabold tracking-tight text-gray-900">Built for WhatsApp at scale</h2>
+                <p class="text-sm text-gray-600 mt-1">Send campaigns, automate flows, and include rich media — all aligned to your brand.</p>
             </div>
-            <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
-                <div class="w-11 h-11 rounded-lg bg-green-50 text-green-600 flex items-center justify-center text-2xl mb-3">⚡</div>
-                <h3 class="font-semibold mb-1">Automation</h3>
-                <p class="text-gray-600 text-sm">Schedule flows, auto-replies, and reminders.</p>
-            </div>
-            <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
-                <div class="w-11 h-11 rounded-lg bg-green-50 text-green-600 flex items-center justify-center text-2xl mb-3">📊</div>
-                <h3 class="font-semibold mb-1">Analytics</h3>
-                <p class="text-gray-600 text-sm">Track delivery, reads, and campaign performance.</p>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="group bg-white rounded-xl border border-gray-100 p-6 shadow-sm transition hover:shadow-md hover:-translate-y-0.5 hover:border-[#0F7B71]/40">
+                    <div class="w-11 h-11 rounded-lg bg-[#0F7B71]/5 text-[#0F7B71] flex items-center justify-center text-2xl mb-3">💬</div>
+                    <h3 class="font-semibold mb-1 text-gray-900 group-hover:text-[#0F7B71]">Bulk Messaging</h3>
+                    <p class="text-gray-600 text-sm">Send thousands with CSV import, variables, and personalization at scale.</p>
+                </div>
+                <div class="group bg-white rounded-xl border border-gray-100 p-6 shadow-sm transition hover:shadow-md hover:-translate-y-0.5 hover:border-[#0F7B71]/40">
+                    <div class="w-11 h-11 rounded-lg bg-[#0F7B71]/5 text-[#0F7B71] flex items-center justify-center text-2xl mb-3">⚡</div>
+                    <h3 class="font-semibold mb-1 text-gray-900 group-hover:text-[#0F7B71]">Automation</h3>
+                    <p class="text-gray-600 text-sm">Schedule flows, auto-replies, follow-ups and reminders with ease.</p>
+                </div>
+                <div class="group bg-white rounded-xl border border-gray-100 p-6 shadow-sm transition hover:shadow-md hover:-translate-y-0.5 hover:border-[#0F7B71]/40">
+                    <div class="w-11 h-11 rounded-lg bg-[#0F7B71]/5 text-[#0F7B71] flex items-center justify-center text-2xl mb-3">📎</div>
+                    <h3 class="font-semibold mb-1 text-gray-900 group-hover:text-[#0F7B71]">Media & Attachments</h3>
+                    <p class="text-gray-600 text-sm">Include images, PDFs, videos and more with reliable delivery.</p>
+                </div>
             </div>
         </div>
     </section>
     <x-benefits-section />
+    <x-solutions />
     <x-customers-love />
-    <x-faq />
+    <x-faq /> 
 </div>
