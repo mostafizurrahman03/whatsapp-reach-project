@@ -18,11 +18,16 @@ class BulkSendMessage extends Model
 
     public function recipients()
     {
-        return $this->hasMany(BulkSendMessageRecipient::class);
+        return $this->hasMany(BulkSendMessageRecipient::class, 'bulk_send_message_id');
     }
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function device()
+    {
+        return $this->belongsTo(MyWhatsappDevice::class, 'device_id', 'device_id');
     }
 }

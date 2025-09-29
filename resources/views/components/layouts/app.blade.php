@@ -34,7 +34,7 @@
                         <a href="{{ route('contact') }}" class="px-1.5 py-1 rounded transition-colors {{ request()->routeIs('contact') ? 'text-[#0F7B71]' : 'text-gray-700 hover:text-[#0F7B71]' }}">Contact Us</a>
                     </li>
                 </ul>
-                <a href="{{ route('features') }}" class="inline-flex items-center gap-2 rounded-lg bg-[#0F7B71] px-3.5 py-2 text-white text-lg font-semibold shadow hover:bg-[#0F7B71]/90 transition-colors">
+                <a href="{{ route('filament.user.auth.register') }}" class="inline-flex items-center gap-2 rounded-lg bg-[#0F7B71] px-3.5 py-2 text-white text-lg font-semibold shadow hover:bg-[#0F7B71]/90 transition-colors">
                     Get Started
                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                 </a>
@@ -123,7 +123,7 @@
                 <ul class="space-y-2 text-sm">
                     <li><a class="hover:text-white" href="mailto:support@example.com">support@example.com</a></li>
                     <li><a class="hover:text-white" href="https://wa.me/1234567890" target="_blank" rel="noopener">WhatsApp</a></li>
-                    <li><span class="text-gray-400">City, Country</span></li>
+                    <li><span class="text-gray-400">Dhaka, Bangladesh</span></li>
                 </ul>
             </div>
         </div>

@@ -110,8 +110,8 @@ class SendMediaMessageResource extends Resource
                     ->formatStateUsing(fn ($state, $record) => $state ?? $record->device_id)
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('number')->label('Receiver')->sortable(),
-                Tables\Columns\TextColumn::make('message')->label('Message')->limit(25)->sortable(), 
+                Tables\Columns\TextColumn::make('number')->label('Receiver')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('message')->label('Message')->limit(25)->searchable()->sortable(), 
 
                 Tables\Columns\ImageColumn::make('media_url')
                     ->label('Attachment')
@@ -123,7 +123,7 @@ class SendMediaMessageResource extends Resource
                     // ->visible(...)  // temporarily remove
                     ->openUrlInNewTab(),
 
-                Tables\Columns\TextColumn::make('caption')->label('Caption')->limit(25),
+                Tables\Columns\TextColumn::make('caption')->label('Caption')->searchable()->limit(25),
                 Tables\Columns\IconColumn::make('is_sent')->boolean()->label('Sent'),
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Created At')      ->sortable(), 
                 // Tables\Columns\TextColumn::make('action')

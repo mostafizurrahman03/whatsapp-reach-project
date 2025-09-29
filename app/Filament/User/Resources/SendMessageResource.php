@@ -119,8 +119,8 @@ class SendMessageResource extends Resource
                 ->formatStateUsing(fn ($state, $record) => $state ?? $record->device_id)
                 ->sortable()
                 ->searchable(),     
-                Tables\Columns\TextColumn::make('number')->label('Receiver'),
-                Tables\Columns\TextColumn::make('message')->label('Message')->limit(50),
+                Tables\Columns\TextColumn::make('number')->label('Receiver')->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('message')->label('Message')->searchable()->limit(50),
                 Tables\Columns\IconColumn::make('is_sent')->boolean()->label('Sent'),
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Created At'),
             ])
