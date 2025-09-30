@@ -13,13 +13,18 @@ return new class extends Migration
     {
         Schema::create('leads', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id'); // subscriber (owner)
             $table->string('name', 150)->nullable();
-            $table->string('phone', 20)->unique();
+            $table->string('phone', 20);
             $table->string('email', 150)->nullable();
             $table->string('source', 100)->nullable();
             $table->enum('status', ['new','contacted','converted','lost'])->default('new');
             $table->timestamps();
+        
+            $table->unique(['user_id','phone']); // এক ইউজারের জন্য unique
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
+        
         
     }
 

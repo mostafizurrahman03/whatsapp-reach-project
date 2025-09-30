@@ -10,12 +10,13 @@ class Campaign extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'name',
         'template_id',
         'channel',
         'status',
         'scheduled_at',
-        'created_by',
+        
     ];
 
     /**
@@ -29,10 +30,11 @@ class Campaign extends Model
     /**
      * Relation: User who created the campaign
      */
-    public function creator()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class);
     }
+ 
     public function leads()
     {
         return $this->belongsToMany(Lead::class, 'campaign_leads')

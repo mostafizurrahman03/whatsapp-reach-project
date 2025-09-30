@@ -51,5 +51,19 @@ class User extends Authenticatable
     {
         return $this->hasMany(MyWhatsappDevice::class, 'user_id', 'id');
     }
+    public function leads()
+    {
+        return $this->hasMany(Lead::class);
+    }
+
+    public function templates()
+    {
+        return $this->hasMany(MessageTemplate::class);
+    }
+
+    public function campaigns()
+    {
+        return $this->hasMany(Campaign::class);
+    }
 
 }

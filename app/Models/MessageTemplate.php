@@ -11,19 +11,21 @@ class MessageTemplate extends Model
 
     // Fillable fields
     protected $fillable = [
+        'user_id',
         'name',
         'content',
         'type',
-        'created_by',
+        
     ];
 
     /**
      * Relation: Template creator (User)
      */
-    public function creator()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(User::class);
     }
+
     public function campaigns()
     {
         return $this->hasMany(Campaign::class, 'template_id');

@@ -13,12 +13,15 @@ return new class extends Migration
     {
         Schema::create('message_templates', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id'); // owner
             $table->string('name', 150);
             $table->text('content');
             $table->enum('type', ['whatsapp','sms','email'])->default('whatsapp');
-            $table->unsignedBigInteger('created_by')->nullable();
             $table->timestamps();
+        
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
+        
     }
 
     /**

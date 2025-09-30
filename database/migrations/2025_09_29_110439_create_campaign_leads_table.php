@@ -18,17 +18,11 @@ return new class extends Migration
             $table->enum('status', ['pending','sent','failed','delivered','read'])->default('pending');
             $table->timestamp('sent_at')->nullable();
             $table->timestamps();
-
-            $table->foreign('campaign_id')
-                  ->references('id')
-                  ->on('campaigns')
-                  ->onDelete('cascade');
-
-            $table->foreign('lead_id')
-                  ->references('id')
-                  ->on('leads')
-                  ->onDelete('cascade');
+        
+            $table->foreign('campaign_id')->references('id')->on('campaigns')->onDelete('cascade');
+            $table->foreign('lead_id')->references('id')->on('leads')->onDelete('cascade');
         });
+        
     }
 
     /**
