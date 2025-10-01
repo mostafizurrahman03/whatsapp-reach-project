@@ -21,6 +21,7 @@ return new class extends Migration
         
             $table->foreign('campaign_id')->references('id')->on('campaigns')->onDelete('cascade');
             $table->foreign('lead_id')->references('id')->on('leads')->onDelete('cascade');
+            $table->unique(['campaign_id', 'lead_id']); // ডুপ্লিকেট attach বন্ধ করবে
         });
         
     }

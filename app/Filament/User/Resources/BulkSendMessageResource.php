@@ -30,8 +30,8 @@ use Filament\Infolists\Components\Group;
 class BulkSendMessageResource extends Resource
 {
     protected static ?string $model = BulkSendMessage::class;
-    protected static ?string $navigationGroup = 'Send Bulk Message';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Whatsapp Bulk Message';
     protected static ?string $navigationLabel = 'Send Bulk Message';
     protected static ?int $navigationSort = 3;
 
@@ -66,7 +66,9 @@ class BulkSendMessageResource extends Resource
                                     ->label('Message')
                                     ->rows(6)
                                     ->required()
-                                    ->maxLength(10000),
+                                    ->reactive() // makes it live-update on typing
+                                    ->helperText(fn ($get, $state) => strlen($state) . ' / 160 characters used')
+                                    ->maxLength(160),
 
                                 Toggle::make('is_sent')
                                     ->label('Marked as sent?')

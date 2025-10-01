@@ -27,7 +27,7 @@ class BulkMediaMessageResource extends Resource
     protected static ?string $model = BulkMediaMessage::class;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?int $navigationSort = 2; // Menu serial
-    protected static ?string $navigationGroup = 'Send Bulk Message';
+    protected static ?string $navigationGroup = 'Whatsapp Bulk Message';
     protected static ?string $navigationLabel = 'Send Bulk Media Message';
 
     public static function form(Form $form): Form

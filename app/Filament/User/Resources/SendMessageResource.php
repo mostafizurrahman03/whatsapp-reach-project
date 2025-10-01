@@ -24,7 +24,7 @@ use Filament\Infolists\Components\Grid;
 class SendMessageResource extends Resource
 {
     protected static ?string $model = SendMessage::class;
-    protected static ?string $navigationGroup = 'Send Single Message';
+    protected static ?string $navigationGroup = 'Whatsapp Single Message';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationLabel = 'Send Message';
     protected static ?int $navigationSort = 2;
