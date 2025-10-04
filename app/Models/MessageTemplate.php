@@ -14,8 +14,9 @@ class MessageTemplate extends Model
         'user_id',
         'name',
         'content',
+        'caption',     // added
+        'media_url',   // added
         'type',
-        
     ];
 
     /**
@@ -26,11 +27,11 @@ class MessageTemplate extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Relation: Campaigns using this template
+     */
     public function campaigns()
     {
         return $this->hasMany(Campaign::class, 'template_id');
     }
 }
-
-
-

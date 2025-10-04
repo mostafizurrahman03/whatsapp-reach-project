@@ -21,7 +21,7 @@
     ];
 @endphp
 
-<div class="max-w-6xl mx-auto p-6 bg-white/5">
+<div id="solutions" class="max-w-6xl mx-auto p-6 bg-white/5">
     <div class="flex items-center justify-between gap-4 mb-6">
         <div>
             <span class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-[#0F7B71]/10 text-[#0F7B71] text-xs font-semibold">Our Solutions</span>

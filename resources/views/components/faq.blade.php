@@ -1,4 +1,4 @@
-<section class="bg-white py-16">
+<section id="faq" class="bg-white py-16">
         <div class="max-w-3xl mx-auto px-4">
                 <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 text-center">Frequently Asked Questions</h2>
                 <p class="text-center text-gray-600 mt-3 mb-10">Everything you need to know about using Whats‑Reach for WhatsApp automation.</p>

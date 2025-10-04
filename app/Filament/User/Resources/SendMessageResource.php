@@ -92,7 +92,10 @@ class SendMessageResource extends Resource
                 Forms\Components\Textarea::make('message')
                     ->label('Message')
                     ->rows(3)
-                    ->required(),
+                    ->required()
+                    ->reactive() // makes it live-update on typing
+                    ->helperText(fn ($get, $state) => strlen($state) . ' / 500 characters used')
+                    ->maxLength(500),
 
                 
                 // RichEditor::make('message')

@@ -61,7 +61,10 @@ class SendMediaMessageResource extends Resource
                 Forms\Components\Textarea::make('message')
                     ->label('Message')
                     ->rows(4)
-                    ->required(),
+                    ->required()
+                    ->reactive() // makes it live-update on typing
+                    ->helperText(fn ($get, $state) => strlen($state) . ' / 500 characters used')
+                    ->maxLength(500),
 
                 // RichEditor::make('message')
                 //     ->toolbarButtons([

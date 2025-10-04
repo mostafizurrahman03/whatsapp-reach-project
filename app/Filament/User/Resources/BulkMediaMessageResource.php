@@ -5,6 +5,7 @@ namespace App\Filament\User\Resources;
 use App\Filament\User\Resources\BulkMediaMessageResource\Pages;
 use App\Filament\User\Resources\BulkMediaMessageResource\RelationManagers\RecipientsRelationManager;
 use App\Models\BulkMediaMessage;
+use App\Models\MessageTemplate;
 use Filament\Forms;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Form;
@@ -33,91 +34,126 @@ class BulkMediaMessageResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-    ->schema([
-        Forms\Components\Grid::make(2) // 2-column grid
             ->schema([
-                // Left column (1st column)
-                Forms\Components\Section::make('Message Details')
-                    ->columnSpan(1)
+                Forms\Components\Grid::make(2) // 2-column grid
                     ->schema([
-                        Forms\Components\Select::make('device_id')
-                            ->label('Select Device')
-                            ->options(function () {
-                                return Auth::user()
-                                    ->myWhatsappDevices()
-                                    ->get()
-                                    ->mapWithKeys(fn($device) => [
-                                        $device->device_id => $device->device_name ?? $device->device_id
-                                    ])->toArray();
-                            })
-                            ->required()
-                            ->searchable(),
+                        // Left column (1st column)
+                        Forms\Components\Section::make('Message Details')
+                            ->columnSpan(1)
+                            ->schema([
+                                // Select Device
+                                Forms\Components\Select::make('device_id')
+                                    ->label('Select Device')
+                                    ->options(function () {
+                                        return Auth::user()
+                                            ->myWhatsappDevices()
+                                            ->get()
+                                            ->mapWithKeys(fn($device) => [
+                                                $device->device_id => $device->device_name ?? $device->device_id
+                                            ])->toArray();
+                                    })
+                                    ->required()
+                                    ->searchable(),
 
-                        Forms\Components\Textarea::make('message')
-                            ->label('Message')
-                            ->rows(4)
-                            ->required(),
+                                // Template Selector + Auto-fill Fields
+                                Forms\Components\Group::make()
+                                    ->schema([
+                                        // Forms\Components\Select::make('template_id')
+                                        //     ->label('📄 Choose Template')
+                                        //     ->options(MessageTemplate::pluck('name', 'id'))
+                                        //     ->searchable()
+                                        //     ->reactive()
+                                        //     ->afterStateUpdated(function ($state, callable $set) {
+                                        //         $template = MessageTemplate::find($state);
+                                        //         if ($template) {
+                                        //             $set('message', $template->content);
+                                        //             $set('caption', $template->caption ?? '');
+                                        //             $set('media_url', $template->media_url ?? null);
+                                        //         }
+                                        //     })
+                                        //     ->helperText('Select a message template to auto-fill message, caption, and attachment.'),
+                                Forms\Components\Select::make('template_id')
+                                    ->label('📄 Choose Template')
+                                    ->options(MessageTemplate::pluck('name', 'id'))
+                                    ->searchable()
+                                    ->reactive()
+                                    ->afterStateUpdated(function ($state, callable $set) {
+                                        $template = MessageTemplate::find($state);
+                                        if ($template) {
+                                            $set('message', $template->content);
+                                            $set('caption', $template->caption ?? '');
 
-                        Forms\Components\FileUpload::make('media_url')
-                            ->label('Attachment')
-                            ->disk('public')
-                            ->directory('messages')
-                            ->downloadable()
-                            ->openable()
-                            ->previewable(true)
-                            ->acceptedFileTypes([
-                                'image/jpeg','image/png','application/pdf',
-                                'application/msword',
-                                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                                'application/vnd.ms-excel',
-                                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                                'image/*',
+                                            // Fix for single file
+                                            if ($template->media_url) {
+                                                $set('media_url', [$template->media_url]); // ✅ wrap in array
+                                            } else {
+                                                $set('media_url', null);
+                                            }
+                                        }
+                                    })
+                                    ->helperText('Select a message template to auto-fill message, caption, and attachment.'),
+
+
+                                        Forms\Components\Textarea::make('message')
+                                            ->label('Message')
+                                            ->rows(4)
+                                            ->required()
+                                            ->reactive()
+                                            ->helperText(fn($get, $state) => strlen($state) . ' / 500 characters used')
+                                            ->maxLength(500),
+
+                                        Forms\Components\Textarea::make('caption')
+                                            ->label('Caption')
+                                            ->rows(2)
+                                            ->reactive()
+                                            ->maxLength(255),
+
+                                        Forms\Components\FileUpload::make('media_url')
+                                            ->label('Attachment')
+                                            ->disk('public')
+                                            ->directory('messages')
+                                            ->downloadable()
+                                            ->openable()
+                                            ->helperText('You can upload one file (jpg, jpeg, png, pdf, docx, xlsx, csv, mp4). Max size: 2MB each.')
+                                            ->previewable(true)
+                                            ->acceptedFileTypes([
+                                                'image/jpeg','image/png','application/pdf',
+                                                'application/msword',
+                                                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                                                'application/vnd.ms-excel',
+                                                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                                                'image/*',
+                                            ]),
+                                    ]),
+
+                                // Sent Toggle
+                                Forms\Components\Toggle::make('is_sent')
+                                    ->label('Sent')
+                                    ->default(false),
                             ]),
 
-                        Forms\Components\Textarea::make('caption')
-                            ->label('Caption')
-                            ->rows(2)
-                            ->maxLength(255),
+                        // Right column (2nd column)
+                        Forms\Components\Section::make('Recipients')
+                            ->columnSpan(1)
+                            ->schema([
+                                TagsInput::make('recipients')
+                                    ->label('Receiver Numbers')
+                                    ->placeholder('8801XXXXXXXXX')
+                                    ->required()
+                                    ->separator(','),
 
-                        Forms\Components\Toggle::make('is_sent')
-                            ->label('Sent')
-                            ->default(false),
+                                Forms\Components\FileUpload::make('recipients_csv')
+                                    ->label('Upload CSV of Numbers')
+                                    ->helperText('Upload a CSV file containing phone numbers in one column.')
+                                    ->disk('public')
+                                    ->directory('recipients')
+                                    ->acceptedFileTypes(['text/csv', 'text/plain'])
+                                    ->maxSize(2048),
+                            ]),
                     ]),
-
-                // Right column (2nd column)
-                Forms\Components\Section::make('Recipients')
-                    ->columnSpan(1)
-                    ->schema([
-                        // Forms\Components\Repeater::make('recipients')
-                        //     // ->relationship('recipients')
-                        //     ->schema([
-                        //         Forms\Components\TextInput::make('number')
-                        //             ->label('Receiver Number')
-                        //             ->placeholder('8801XXXXXXXXX')
-                        //             ->required(),
-                        //     ])
-                        //     ->createItemButtonLabel('➕ Add another number')
-                        //     ->columns(1),
-
-                        TagsInput::make('recipients')
-                            ->label('Receiver Numbers')
-                            ->placeholder('8801XXXXXXXXX')
-                            ->required()
-                            ->separator(','), // Use comma as separator
-
-
-                        Forms\Components\FileUpload::make('recipients_csv')
-                            ->label('Upload CSV of Numbers')
-                            ->helperText('Upload a CSV file containing phone numbers in one column.')
-                            ->disk('public')
-                            ->directory('recipients')
-                            ->acceptedFileTypes(['text/csv', 'text/plain'])
-                            ->maxSize(2048),
-                    ]),
-            ]),
-    ]);
-
+            ]);
     }
+
 
     public static function table(Table $table): Table
     {

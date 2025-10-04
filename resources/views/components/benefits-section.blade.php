@@ -1,4 +1,4 @@
-<section class="bg-white py-16">
+<section id="benefits" class="bg-white py-16">
     <div class="max-w-7xl mx-auto px-4 text-center">
         <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6">
             Benefits of Using Whats-Reach Service

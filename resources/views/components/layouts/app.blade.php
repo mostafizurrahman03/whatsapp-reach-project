@@ -6,6 +6,7 @@
     <title>{{ $title ?? 'WhatsApp Automation' }}</title>
     @vite('resources/css/app.css') {{-- Tailwind --}}
     @livewireStyles
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-gray-50 text-gray-900">
 
@@ -70,13 +71,13 @@
             <!-- Brand -->
             <div>
                 <div class="flex items-center gap-2 mb-3">
-                    <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[#0F7B71] text-white font-bold">WR</span>
-                    <span class="font-extrabold text-white">Whats-Reach</span>
+                    <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[#0F7B71] text-white font-bold text-md">WR</span>
+                    <span class="font-extrabold text-xl text-white">Whats-Reach</span>
                 </div>
                 <p class="text-sm text-gray-400">WhatsApp bulk messaging made simple, reliable, and scalable for modern teams.</p>
                 <!-- Socials -->
                 <div class="mt-4">
-                    <h4 class="text-xs font-semibold text-white/80 mb-2">Follow us</h4>
+                    <h4 class="text-xs font-semibold text-white/80 mb-2 hover:text-white">Follow us</h4>
                     <div class="flex items-center gap-3">
                         <a href="#" class="text-gray-400 hover:text-white" aria-label="Twitter">
                             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.633 7.997c.013.18.013.36.013.54 0 5.518-4.2 11.875-11.875 11.875A11.8 11.8 0 0 1 2 19.61c.257.03.5.04.77.04a8.38 8.38 0 0 0 5.2-1.79 4.19 4.19 0 0 1-3.91-2.9c.26.04.52.07.79.07.38 0 .77-.05 1.12-.15A4.18 4.18 0 0 1 3.3 11.7v-.05c.56.31 1.2.5 1.88.52a4.18 4.18 0 0 1-1.87-3.48c0-.77.2-1.47.56-2.08a11.9 11.9 0 0 0 8.63 4.37 4.72 4.72 0 0 1-.1-.96 4.18 4.18 0 0 1 7.24-2.86 8.23 8.23 0 0 0 2.65-1.01 4.2 4.2 0 0 1-1.84 2.31 8.37 8.37 0 0 0 2.4-.66 8.98 8.98 0 0 1-2.12 2.19Z"/></svg>
@@ -101,29 +102,30 @@
             </div>
             <!-- Product -->
             <div>
-                <h3 class="text-sm font-semibold text-white mb-3">Product</h3>
+                <h3 class="text-sm font-semibold text-white mb-3 text-xl">Product</h3>
                 <ul class="space-y-2 text-sm">
-                    <li><a class="hover:text-white" href="{{ route('features') }}">Features</a></li>
-                    <li><a class="hover:text-white" href="{{ route('pricing') }}">Pricing</a></li>
-                    <li><a class="hover:text-white" href="{{ route('contact') }}">Contact</a></li>
+                    <li><a class="relative transition duration-300 hover:text-[#6BBFA9] after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#0F7B71] after:rounded-full hover:after:w-full after:transition-all after:duration-300"
+                    href="{{ route('features') }}">Features</a></li>
+                    <li><a class="relative transition duration-300 hover:text-[#6BBFA9] after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#0F7B71] after:rounded-full hover:after:w-full after:transition-all after:duration-300" href="{{ route('pricing') }}">Pricing</a></li>
+                    <li><a class="relative transition duration-300 hover:text-[#6BBFA9] after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#0F7B71] after:rounded-full hover:after:w-full after:transition-all after:duration-300" href="{{ route('contact') }}">Contact</a></li>
                 </ul>
             </div>
             <!-- Resources -->
             <div>
-                <h3 class="text-sm font-semibold text-white mb-3">Resources</h3>
+                <h3 class="text-sm font-semibold text-white mb-3 text-xl">Resources</h3>
                 <ul class="space-y-2 text-sm">
-                    <li><a class="hover:text-white" href="#">Docs</a></li>
-                    <li><a class="hover:text-white" href="#">Guides</a></li>
-                    <li><a class="hover:text-white" href="#">Support</a></li>
+                    <li><a class="relative transition duration-300 hover:text-[#6BBFA9] after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#0F7B71] after:rounded-full hover:after:w-full after:transition-all after:duration-300" href="#">Docs</a></li>
+                    <li><a class="relative transition duration-300 hover:text-[#6BBFA9] after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#0F7B71] after:rounded-full hover:after:w-full after:transition-all after:duration-300" href="#">Guides</a></li>
+                    <li><a class="relative transition duration-300 hover:text-[#6BBFA9] after:content-[''] after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-[#0F7B71] after:rounded-full hover:after:w-full after:transition-all after:duration-300" href="#">Support</a></li>
                 </ul>
             </div>
             <!-- Contact -->
             <div>
-                <h3 class="text-sm font-semibold text-white mb-3">Get in touch</h3>
+                <h3 class="text-sm font-semibold text-white mb-3 text-xl">Get in touch</h3>
                 <ul class="space-y-2 text-sm">
                     <li><a class="hover:text-white" href="mailto:support@example.com">support@example.com</a></li>
                     <li><a class="hover:text-white" href="https://wa.me/1234567890" target="_blank" rel="noopener">WhatsApp</a></li>
-                    <li><span class="text-gray-400">Dhaka, Bangladesh</span></li>
+                    <li><span class="hover:text-white">Dhaka, Bangladesh</span></li>
                 </ul>
             </div>
         </div>
