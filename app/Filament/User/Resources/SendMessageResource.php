@@ -20,6 +20,7 @@ use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\Grid;
+use App\Models\MessageTemplate;
 
 class SendMessageResource extends Resource
 {
@@ -83,11 +84,24 @@ class SendMessageResource extends Resource
                 //     ->searchable(),
 
 
-
                 Forms\Components\TextInput::make('number')
                     ->label('Receiver Number')
                     ->placeholder('8801XXXXXXXXX')
                     ->required(),
+
+                Forms\Components\Select::make('template_id')
+                    ->label('📄 Choose Template')
+                    ->options(MessageTemplate::pluck('name', 'id'))
+                    ->searchable()
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        $template = MessageTemplate::find($state);
+
+                        if ($template) {
+                            $set('message', $template->content);
+                        }
+                    })
+                    ->helperText('Select a template to auto-fill the message.'),
 
                 Forms\Components\Textarea::make('message')
                     ->label('Message')
@@ -118,17 +132,32 @@ class SendMessageResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('device.phone_number')
-                ->label('Sender Number')
-                ->formatStateUsing(fn ($state, $record) => $state ?? $record->device_id)
-                ->sortable()
-                ->searchable(),     
-                Tables\Columns\TextColumn::make('number')->label('Receiver')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('message')->label('Message')->searchable()->limit(50),
-                Tables\Columns\IconColumn::make('is_sent')->boolean()->label('Sent'),
-                Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Created At'),
+                    ->label('Sender Number')
+                    ->formatStateUsing(fn ($state, $record) => $state ?? $record->device_id)
+                    ->sortable()
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('number')
+                    ->label('Receiver')
+                    ->sortable()
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('message')
+                    ->label('Message')
+                    ->searchable()
+                    ->limit(25),
+
+                Tables\Columns\IconColumn::make('is_sent')
+                    ->label('Sent')
+                    ->boolean(),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Created At')
+                    ->dateTime()
+                    ->toggleable(), // <-- Toggleable
             ])
             ->filters([
-                //
+                // Optional: Filter if needed
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -142,6 +171,7 @@ class SendMessageResource extends Resource
                 ]),
             ]);
     }
+
     // public static function getNavigationUrl(): string
     // {
     //     return static::getUrl('create'); // default index page, but we define create page

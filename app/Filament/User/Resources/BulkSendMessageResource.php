@@ -26,6 +26,7 @@ use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\Group;
+use App\Models\MessageTemplate; 
 
 class BulkSendMessageResource extends Resource
 {
@@ -34,6 +35,7 @@ class BulkSendMessageResource extends Resource
     protected static ?string $navigationGroup = 'Whatsapp Bulk Message';
     protected static ?string $navigationLabel = 'Send Bulk Message';
     protected static ?int $navigationSort = 3;
+
 
     public static function form(Form $form): Form
     {
@@ -61,6 +63,20 @@ class BulkSendMessageResource extends Resource
                                     ->required()
                                     ->searchable()
                                     ->preload(),
+
+                                // Template Selector + Auto-fill
+                                Select::make('template_id')
+                                    ->label('📄 Choose Template')
+                                    ->options(MessageTemplate::pluck('name', 'id'))
+                                    ->searchable()
+                                    ->reactive()
+                                    ->afterStateUpdated(function ($state, callable $set) {
+                                        $template = MessageTemplate::find($state);
+                                        if ($template) {
+                                            $set('message', $template->content);
+                                        }
+                                    })
+                                    ->helperText('Select a template to auto-fill the message.'),
 
                                 Textarea::make('message')
                                     ->label('Message')
@@ -99,7 +115,6 @@ class BulkSendMessageResource extends Resource
                                         }
                                     }),
 
-
                                 FileUpload::make('recipients_csv')
                                     ->label('Upload CSV of Numbers')
                                     ->helperText('Upload a CSV file containing phone numbers in one column.')
@@ -112,6 +127,7 @@ class BulkSendMessageResource extends Resource
             ]);
     }
 
+
     public static function table(Table $table): Table
     {
         return $table
@@ -123,6 +139,7 @@ class BulkSendMessageResource extends Resource
 
                 TextColumn::make('recipients')
                     ->label('Receivers')
+                    ->limit(25)
                     ->getStateUsing(fn ($record) => $record->recipients->pluck('number')->implode(', ')),
 
                 TextColumn::make('message')
@@ -139,6 +156,7 @@ class BulkSendMessageResource extends Resource
                 TextColumn::make('created_at')
                     ->dateTime('d M Y, h:i A')
                     ->label('Created At')
+                    ->toggleable()
                     ->sortable(),
             ])
             ->filters([

@@ -22,6 +22,8 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\Grid;
+use App\Models\MessageTemplate;
+
 
 class SendMediaMessageResource extends Resource
 {
@@ -52,12 +54,31 @@ class SendMediaMessageResource extends Resource
                     })
                     ->required()
                     ->searchable(),
-
+                    
                 Forms\Components\TextInput::make('number')
                     ->label('Receiver Number')
                     ->placeholder('8801XXXXXXXXX')
                     ->required(),
+                    Forms\Components\Select::make('template_id')
+                    ->label('📄 Choose Template')
+                    ->options(MessageTemplate::pluck('name', 'id'))
+                    ->searchable()
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        $template = MessageTemplate::find($state);
+                        if ($template) {
+                            $set('message', $template->content);
+                            $set('caption', $template->caption ?? '');
 
+                            // Fix for single file
+                            if ($template->media_url) {
+                                $set('media_url', [$template->media_url]); //  wrap in array
+                            } else {
+                                $set('media_url', null);
+                            }
+                        }
+                    })
+                    ->helperText('Select a message template to auto-fill message, caption, and attachment.'),
                 Forms\Components\Textarea::make('message')
                     ->label('Message')
                     ->rows(4)
@@ -79,8 +100,8 @@ class SendMediaMessageResource extends Resource
                     ->disk('public') // Which disk the files will be saved to
                     ->directory('messages') // Folder where files will be stored
                     // ->multiple() // Support for multiple file uploads
-                    ->downloadable() // Allow files to be downloaded
-                    ->openable() // Allow files to be opened
+                    ->downloadable() 
+                    ->openable() 
                     ->helperText('You can upload one file (jpg, jpeg, png, pdf, docx, xlsx, csv, mp4). Max size: 2MB each.')
                     ->previewable(true) // Set true if you want image preview
                     ->acceptedFileTypes([
@@ -128,7 +149,7 @@ class SendMediaMessageResource extends Resource
 
                 Tables\Columns\TextColumn::make('caption')->label('Caption')->searchable()->limit(25),
                 Tables\Columns\IconColumn::make('is_sent')->boolean()->label('Sent'),
-                Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Created At')      ->sortable(), 
+                Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Created At')->toggleable()->sortable(), 
                 // Tables\Columns\TextColumn::make('action')
                 //     ->label('Action')
                 //     ->formatStateUsing(fn ($record) => 'View | Edit | Delete')
