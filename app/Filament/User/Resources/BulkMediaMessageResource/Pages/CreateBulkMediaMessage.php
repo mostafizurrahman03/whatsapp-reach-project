@@ -218,7 +218,7 @@ class CreateBulkMediaMessage extends CreateRecord
                 }
                 
                 // Delay between messages
-                usleep(1000000); // 1 second delay
+                usleep(3000000); // 3 second delay
                 
             } catch (\Exception $e) {
                 $failCount++;
@@ -258,4 +258,12 @@ class CreateBulkMediaMessage extends CreateRecord
     {
         return $this->getResource()::getUrl('index');
     }
+
+    // public function mutateFormDataBeforeCreate(array $data): array
+    // {
+        
+    //     dd($data); // dumps like API response
+    //     return $data;
+    // }
+
 }
