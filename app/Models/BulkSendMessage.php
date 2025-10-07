@@ -14,6 +14,7 @@ class BulkSendMessage extends Model
         'user_id',
         'message',
         'is_sent',
+        'sent_at',
     ];
 
     public function recipients()

@@ -2,8 +2,8 @@
 
 namespace App\Filament\User\Resources;
 
-use App\Filament\User\Resources\BulkMediaMessageRecipientResource\Pages;
-use App\Models\BulkMediaMessageRecipient;
+use App\Filament\User\Resources\BulkSendMessageRecipientResource\Pages;
+use App\Models\BulkSendMessageRecipient;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -14,23 +14,23 @@ use Filament\Tables\Columns\IconColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
 
-class BulkMediaMessageRecipientResource extends Resource
+class BulkSendMessageRecipientResource extends Resource
 {
-    protected static ?string $model = BulkMediaMessageRecipient::class;
+    protected static ?string $model = BulkSendMessageRecipient::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-paper-airplane';
     protected static ?string $navigationGroup = 'Whatsapp Bulk Message';
-    protected static ?string $pluralLabel = 'Bulk Media Message Recipients';
-    protected static ?int $navigationSort = 3; // Menu serial
+    protected static ?string $pluralLabel = 'Bulk Send Message Recipients';
+    protected static ?int $navigationSort = 4;
     protected static ?string $label = 'Recipient';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('bulk_media_message_id')
-                    ->label('Message')
-                    ->relationship('bulkMediaMessage', 'message')
+                Forms\Components\Select::make('bulk_send_message_id')
+                    ->label('Bulk Message')
+                    ->relationship('bulkSendMessage', 'title')
                     ->searchable()
                     ->required(),
 
@@ -54,95 +54,97 @@ class BulkMediaMessageRecipientResource extends Resource
     {
         return $table
             ->columns([
+                // ID
+                TextColumn::make('id')->sortable(),
+
                 // Sender Device
                 TextColumn::make('sender')
                     ->label('Sender')
                     ->state(function ($record) {
-                        $device = $record->bulkMediaMessage?->device;
+                        $device = $record->bulkSendMessage?->device;
 
                         if (!$device) {
                             return '—';
                         }
 
-                        $name = $device->device_id ?: 'Unknown Device'; 
+                        $name = $device->device_id ?: 'Unknown Device';
                         $phone = $device->phone_number;
 
                         return $phone ? "{$name} ({$phone})" : $name;
                     })
                     ->sortable()
                     ->searchable(query: function (Builder $query, string $search) {
-                        return $query->whereHas('bulkMediaMessage.device', function (Builder $q) use ($search) {
-                            $q->where(function ($query) use ($search) {
-                                $query->where('device_name', 'like', "%{$search}%")
-                                    ->orWhere('phone_number', 'like', "%{$search}%")
-                                    ->orWhere('device_id', 'like', "%{$search}%");
-                            });
+                        return $query->whereHas('bulkSendMessage.device', function (Builder $q) use ($search) {
+                            $q->where('device_name', 'like', "%{$search}%")
+                              ->orWhere('phone_number', 'like', "%{$search}%")
+                              ->orWhere('device_id', 'like', "%{$search}%");
                         });
                     }),
 
-                // Message Body
-                TextColumn::make('bulkMediaMessage.message')
+                // Message Title/Body
+                TextColumn::make('bulkSendMessage.message')
                     ->label('Message')
                     ->limit(20)
-                    ->tooltip(fn ($record) => $record->bulkMediaMessage?->message),
+                    ->tooltip(fn ($record) => $record->bulkSendMessage?->message),
 
-                // Recipient
+                // Recipient Number
                 TextColumn::make('number')
                     ->label('Recipient')
                     ->sortable()
                     ->searchable(),
 
-                // Sent status
+                // Sent Status
                 IconColumn::make('is_sent')
                     ->label('Sent')
                     ->boolean()
                     ->trueIcon('heroicon-o-check-badge')
                     ->falseIcon('heroicon-o-x-mark'),
 
-                // Sent time
+                // Sent Time
                 TextColumn::make('sent_at')
                     ->label('Sent At')
                     ->dateTime()
                     ->toggleable()
                     ->sortable(),
 
+                // Created At
                 TextColumn::make('created_at')
                     ->label('Created')
                     ->dateTime()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                 //  Sent Status Filter
-    Tables\Filters\TernaryFilter::make('is_sent')
-    ->label('Sent Status')
-    ->placeholder('All')
-    ->trueLabel('Sent')
-    ->falseLabel('Not Sent')
-    ->queries(
-        true: fn (Builder $query) => $query->where('is_sent', true),
-        false: fn (Builder $query) => $query->where('is_sent', false),
-        blank: fn (Builder $query) => $query,
-    ),
+                // Sent Status Filter
+                TernaryFilter::make('is_sent')
+                    ->label('Sent Status')
+                    ->placeholder('All')
+                    ->trueLabel('Sent')
+                    ->falseLabel('Not Sent')
+                    ->queries(
+                        true: fn (Builder $query) => $query->where('is_sent', true),
+                        false: fn (Builder $query) => $query->where('is_sent', false),
+                        blank: fn (Builder $query) => $query,
+                    ),
 
-//  Date Range Filter
-Tables\Filters\Filter::make('created_at')
-    ->label('Created Date')
-    ->form([
-        Forms\Components\DatePicker::make('from')->label('From'),
-        Forms\Components\DatePicker::make('until')->label('Until'),
-    ])
-    ->query(function (Builder $query, array $data): Builder {
-        return $query
-            ->when($data['from'] ?? null, fn ($q, $date) => $q->whereDate('created_at', '>=', $date))
-            ->when($data['until'] ?? null, fn ($q, $date) => $q->whereDate('created_at', '<=', $date));
-    }),
+                // Created Date Filter
+                Tables\Filters\Filter::make('created_at')
+                    ->label('Created Date')
+                    ->form([
+                        Forms\Components\DatePicker::make('from')->label('From'),
+                        Forms\Components\DatePicker::make('until')->label('Until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when($data['from'] ?? null, fn ($q, $date) => $q->whereDate('created_at', '>=', $date))
+                            ->when($data['until'] ?? null, fn ($q, $date) => $q->whereDate('created_at', '<=', $date));
+                    }),
 
-//  Device Filter
-Tables\Filters\SelectFilter::make('bulkMediaMessage.device_id')
-    ->label('Sender Device')
-    ->relationship('bulkMediaMessage.device', 'device_id')
-    ->searchable()
-    ->preload(),
+                // Device Filter
+                Tables\Filters\SelectFilter::make('bulkSendMessage.device_id')
+                    ->label('Sender Device')
+                    ->relationship('bulkSendMessage.device', 'device_id')
+                    ->searchable()
+                    ->preload(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -163,9 +165,9 @@ Tables\Filters\SelectFilter::make('bulkMediaMessage.device_id')
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListBulkMediaMessageRecipients::route('/'),
-            'create' => Pages\CreateBulkMediaMessageRecipient::route('/create'),
-            'edit' => Pages\EditBulkMediaMessageRecipient::route('/{record}/edit'),
+            'index' => Pages\ListBulkSendMessageRecipients::route('/'),
+            'create' => Pages\CreateBulkSendMessageRecipient::route('/create'),
+            'edit' => Pages\EditBulkSendMessageRecipient::route('/{record}/edit'),
         ];
     }
 }
