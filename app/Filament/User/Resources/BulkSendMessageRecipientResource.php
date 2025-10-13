@@ -13,6 +13,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\IconColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
+// ✅ এই দুইটা line সবচেয়ে important (Export package থেকে)
+use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 
 class BulkSendMessageRecipientResource extends Resource
 {
@@ -55,7 +58,7 @@ class BulkSendMessageRecipientResource extends Resource
         return $table
             ->columns([
                 // ID
-                TextColumn::make('id')->sortable(),
+                // TextColumn::make('id')->sortable(),
 
                 // Sender Device
                 TextColumn::make('sender')
@@ -146,6 +149,15 @@ class BulkSendMessageRecipientResource extends Resource
                     ->searchable()
                     ->preload(),
             ])
+            ->headerActions([
+            FilamentExportHeaderAction::make('export')
+                ->label('Export Data')
+                ->fileName('bulk_send_message_recipients')
+                ->defaultFormat('xlsx')
+                ->withHiddenColumns() // keeps hidden columns hidden
+                ->color('success')
+                ->icon('heroicon-o-arrow-down-tray'),
+            ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
@@ -153,6 +165,10 @@ class BulkSendMessageRecipientResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    FilamentExportBulkAction::make('export-selected')
+                    ->label('Export Selected')
+                    ->fileName('selected_recipients_export')
+                    ->defaultFormat('xlsx'),
                 ]),
             ]);
     }

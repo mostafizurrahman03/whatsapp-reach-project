@@ -165,6 +165,7 @@ class CreateBulkSendMessage extends CreateRecord
                         ->where('number', $number)
                         ->update(['is_sent' => true, 'sent_at' => now()]);
                 }
+
             } else {
                 $failCount = count($recipients);
                 $responseData = $bulkResponse->json() ?? [];
@@ -211,3 +212,4 @@ class CreateBulkSendMessage extends CreateRecord
         return $this->getResource()::getUrl('index');
     }
 }
+ 

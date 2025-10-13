@@ -109,10 +109,10 @@ class BulkSendMessageResource extends Resource
                                     })
                                     ->dehydrateStateUsing(fn ($state) => $state) // keep state during save
                                     ->saveRelationshipsUsing(function ($record, $state) {
-                                        $record->recipients()->delete();
-                                        foreach ($state as $number) {
-                                            $record->recipients()->create(['number' => $number]);
-                                        }
+                                        // $record->recipients()->delete();
+                                        // foreach ($state as $number) {
+                                        //     $record->recipients()->create(['number' => $number]);
+                                        // }
                                     }),
 
                                 FileUpload::make('recipients_csv')

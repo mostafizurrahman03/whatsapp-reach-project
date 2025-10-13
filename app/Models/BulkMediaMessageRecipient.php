@@ -22,7 +22,7 @@ class BulkMediaMessageRecipient extends Model
     {
         return $this->belongsTo(BulkMediaMessage::class);
     }
-     public function message()
+    public function message()
     {
         return $this->belongsTo(BulkMediaMessage::class, 'bulk_media_message_id');
     }

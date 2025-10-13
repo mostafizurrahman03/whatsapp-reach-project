@@ -13,6 +13,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\IconColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 
 class BulkMediaMessageRecipientResource extends Resource
 {
@@ -114,46 +116,59 @@ class BulkMediaMessageRecipientResource extends Resource
             ->filters([
                  //  Sent Status Filter
     Tables\Filters\TernaryFilter::make('is_sent')
-    ->label('Sent Status')
-    ->placeholder('All')
-    ->trueLabel('Sent')
-    ->falseLabel('Not Sent')
-    ->queries(
-        true: fn (Builder $query) => $query->where('is_sent', true),
-        false: fn (Builder $query) => $query->where('is_sent', false),
-        blank: fn (Builder $query) => $query,
-    ),
+        ->label('Sent Status')
+        ->placeholder('All')
+        ->trueLabel('Sent')
+        ->falseLabel('Not Sent')
+        ->queries(
+            true: fn (Builder $query) => $query->where('is_sent', true),
+            false: fn (Builder $query) => $query->where('is_sent', false),
+            blank: fn (Builder $query) => $query,
+        ),
 
-//  Date Range Filter
-Tables\Filters\Filter::make('created_at')
-    ->label('Created Date')
-    ->form([
-        Forms\Components\DatePicker::make('from')->label('From'),
-        Forms\Components\DatePicker::make('until')->label('Until'),
-    ])
-    ->query(function (Builder $query, array $data): Builder {
-        return $query
-            ->when($data['from'] ?? null, fn ($q, $date) => $q->whereDate('created_at', '>=', $date))
-            ->when($data['until'] ?? null, fn ($q, $date) => $q->whereDate('created_at', '<=', $date));
-    }),
+    //  Date Range Filter
+    Tables\Filters\Filter::make('created_at')
+        ->label('Created Date')
+        ->form([
+            Forms\Components\DatePicker::make('from')->label('From'),
+            Forms\Components\DatePicker::make('until')->label('Until'),
+        ])
+        ->query(function (Builder $query, array $data): Builder {
+            return $query
+                ->when($data['from'] ?? null, fn ($q, $date) => $q->whereDate('created_at', '>=', $date))
+                ->when($data['until'] ?? null, fn ($q, $date) => $q->whereDate('created_at', '<=', $date));
+        }),
 
-//  Device Filter
-Tables\Filters\SelectFilter::make('bulkMediaMessage.device_id')
-    ->label('Sender Device')
-    ->relationship('bulkMediaMessage.device', 'device_id')
-    ->searchable()
-    ->preload(),
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
+    //  Device Filter
+    Tables\Filters\SelectFilter::make('bulkMediaMessage.device_id')
+        ->label('Sender Device')
+        ->relationship('bulkMediaMessage.device', 'device_id')
+        ->searchable()
+        ->preload(),
+                ])
+                ->headerActions([
+                FilamentExportHeaderAction::make('export')
+                    ->label('Export Data')
+                    ->fileName('bulk_send_message_recipients')
+                    ->defaultFormat('xlsx')
+                    ->withHiddenColumns() // keeps hidden columns hidden
+                    ->color('success')
+                    ->icon('heroicon-o-arrow-down-tray'),
+                ])
+                ->actions([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make(),
+                ])
+                ->bulkActions([
+                    Tables\Actions\BulkActionGroup::make([
+                        Tables\Actions\DeleteBulkAction::make(),
+                        FilamentExportBulkAction::make('export-selected')
+                        ->label('Export Selected')
+                        ->fileName('selected_recipients_export')
+                        ->defaultFormat('xlsx'),
+                        ]),
+                ]);
+        }
 
     public static function getRelations(): array
     {

@@ -12,8 +12,8 @@ class BulkSendMessageRecipient extends Model
     protected $fillable = [
         'bulk_send_message_id',
         'number',
-        'sent_at',
         'is_sent',
+        'sent_at',
     ];
 
     // public function bulkMessage()
@@ -21,12 +21,15 @@ class BulkSendMessageRecipient extends Model
     //     return $this->belongsTo(BulkSendMessage::class);
     // }
     protected $casts = [
-        'sent_at' => 'datetime',
         'is_sent' => 'boolean',
+        'sent_at' => 'datetime',
     ];
     public function bulkSendMessage()
     {
-        return $this->belongsTo(BulkSendMessage::class);
+        return $this->belongsTo(BulkSendMessage::class, 'bulk_send_message_id');
     }
+    protected $table = 'bulk_send_message_recipients';
+
+   
 
 }
