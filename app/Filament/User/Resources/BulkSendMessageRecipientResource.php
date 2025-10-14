@@ -13,7 +13,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\IconColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
-// ✅ এই দুইটা line সবচেয়ে important (Export package থেকে)
+//  এই দুইটা line সবচেয়ে important (Export package থেকে)
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 
@@ -22,9 +22,9 @@ class BulkSendMessageRecipientResource extends Resource
     protected static ?string $model = BulkSendMessageRecipient::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-paper-airplane';
-    protected static ?string $navigationGroup = 'Whatsapp Bulk Message';
+    protected static ?string $navigationGroup = 'Reports';
     protected static ?string $pluralLabel = 'Bulk Send Message Recipients';
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 5;
     protected static ?string $label = 'Recipient';
 
     public static function form(Form $form): Form

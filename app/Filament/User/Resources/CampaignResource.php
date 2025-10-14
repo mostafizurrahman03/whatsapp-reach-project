@@ -9,6 +9,10 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DateTimePicker;
 use Illuminate\Database\Eloquent\Builder;
 
 class CampaignResource extends Resource
@@ -19,51 +23,58 @@ class CampaignResource extends Resource
     protected static ?string $navigationLabel = 'Campaigns';
     protected static ?string $pluralLabel = 'Campaigns';
     protected static ?string $modelLabel = 'Campaign';
-    protected static ?string $navigationGroup = 'Marketing';
-    protected static ?int $navigationSort = 5;
+    protected static ?string $navigationGroup = 'Campaign Management';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                // Admin only: assign user
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'name')
-                    ->label('User')
-                    ->required()
-                    ->visible(fn () => auth()->user()->role === 'admin'),
+                Section::make('Campaign Details') // Section wrapping all fields
+                    ->schema([
+                        // Admin only: assign user
+                        Select::make('user_id')
+                            ->relationship('user', 'name')
+                            ->label('User')
+                            ->required()
+                            ->visible(fn () => auth()->user()->role === 'admin'),
 
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(150),
+                        TextInput::make('name')
+                            ->label('Campaign Name')
+                            ->required()
+                            ->maxLength(150),
 
-                Forms\Components\Select::make('template_id')
-                    ->relationship('template', 'name')
-                    ->required()
-                    ->label('Template'),
+                        // Template field (commented out for now)
+                        // Select::make('template_id')
+                        //     ->relationship('template', 'name')
+                        //     ->required()
+                        //     ->label('Template'),
 
-                Forms\Components\Select::make('channel')
-                    ->options([
-                        'whatsapp' => 'WhatsApp',
-                        'sms' => 'SMS',
-                        'email' => 'Email',
-                    ])
-                    ->default('whatsapp')
-                    ->required(),
+                        Select::make('channel')
+                            ->label('Channel')
+                            ->options([
+                                'whatsapp' => 'WhatsApp',
+                                'sms' => 'SMS',
+                                'email' => 'Email',
+                            ])
+                            ->default('whatsapp')
+                            ->required(),
 
-                Forms\Components\Select::make('status')
-                    ->options([
-                        'draft' => 'Draft',
-                        'scheduled' => 'Scheduled',
-                        'running' => 'Running',
-                        'completed' => 'Completed',
-                        'failed' => 'Failed',
-                    ])
-                    ->default('draft')
-                    ->required(),
+                        Select::make('status')
+                            ->label('Status')
+                            ->options([
+                                'draft' => 'Draft',
+                                'scheduled' => 'Scheduled',
+                                'running' => 'Running',
+                                'completed' => 'Completed',
+                                'failed' => 'Failed',
+                            ])
+                            ->default('draft')
+                            ->required(),
 
-                Forms\Components\DateTimePicker::make('scheduled_at')
-                    ->label('Scheduled At'),
+                        DateTimePicker::make('scheduled_at')
+                            ->label('Scheduled At'),
+                    ]),
             ]);
     }
 
@@ -77,7 +88,7 @@ class CampaignResource extends Resource
                     ->visible(fn () => auth()->user()->role === 'admin'),
 
                 Tables\Columns\TextColumn::make('name')->searchable(),
-                Tables\Columns\TextColumn::make('template.name')->label('Template'),
+                // Tables\Columns\TextColumn::make('template.name')->label('Template'),
                 Tables\Columns\TextColumn::make('channel')->badge(),
                 Tables\Columns\TextColumn::make('status')->badge(),
                 Tables\Columns\TextColumn::make('scheduled_at')->dateTime()->sortable(),

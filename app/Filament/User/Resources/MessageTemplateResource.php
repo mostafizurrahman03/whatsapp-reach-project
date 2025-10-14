@@ -24,8 +24,8 @@ class MessageTemplateResource extends Resource
     protected static ?string $navigationLabel = 'Message Templates';
     protected static ?string $pluralLabel = 'Message Templates';
     protected static ?string $modelLabel = 'Message Template';
-    protected static ?string $navigationGroup = 'Marketing';
-    protected static ?int $navigationSort = 5;
+    protected static ?string $navigationGroup = 'Campaign Management';
+    protected static ?int $navigationSort = 2;
 
     // Form: Create / Edit
     public static function form(Form $form): Form

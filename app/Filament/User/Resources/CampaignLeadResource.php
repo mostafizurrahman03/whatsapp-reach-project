@@ -27,8 +27,8 @@ class CampaignLeadResource extends Resource
     protected static ?string $navigationLabel = 'Campaign Leads';
     protected static ?string $pluralLabel = 'Campaign Leads';
     protected static ?string $modelLabel = 'Campaign Lead';
-    protected static ?string $navigationGroup = 'Marketing';
-    protected static ?int $navigationSort = 5;
+    // protected static ?string $navigationGroup = 'Campaign Management';
+    // protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {

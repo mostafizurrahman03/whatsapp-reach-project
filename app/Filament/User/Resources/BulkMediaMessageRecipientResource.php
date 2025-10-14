@@ -21,9 +21,9 @@ class BulkMediaMessageRecipientResource extends Resource
     protected static ?string $model = BulkMediaMessageRecipient::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-paper-airplane';
-    protected static ?string $navigationGroup = 'Whatsapp Bulk Message';
+    protected static ?string $navigationGroup = 'Reports';
     protected static ?string $pluralLabel = 'Bulk Media Message Recipients';
-    protected static ?int $navigationSort = 3; // Menu serial
+    protected static ?int $navigationSort = 5; // Menu serial
     protected static ?string $label = 'Recipient';
 
     public static function form(Form $form): Form

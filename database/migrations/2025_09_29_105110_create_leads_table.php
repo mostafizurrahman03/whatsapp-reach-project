@@ -21,7 +21,8 @@ return new class extends Migration
             $table->enum('status', ['new','contacted','converted','lost'])->default('new');
             $table->timestamps();
         
-            $table->unique(['user_id','phone']); // এক ইউজারের জন্য unique
+            // $table->unique(['user_id','phone']); // unique for one user
+            $table->unique(['user_id', 'campaign_id', 'phone']); //unique for one campaign and one user
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
         
