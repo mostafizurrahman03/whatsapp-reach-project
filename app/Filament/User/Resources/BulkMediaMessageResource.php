@@ -11,17 +11,22 @@ use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Builder;
 
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 use Filament\Infolists\Infolist;
-use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\Section as InfoSection;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\Group;
+use Filament\Forms\Components\Section as FormSection;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\FileUpload;
+
 
 class BulkMediaMessageResource extends Resource
 {
@@ -132,23 +137,55 @@ class BulkMediaMessageResource extends Resource
                             ]),
 
                         // Right column (2nd column)
-                        Forms\Components\Section::make('Recipients')
+                        // Forms\Components\Section::make('Recipients')
+                        //     ->columnSpan(1)
+                        //     ->schema([
+                        //         TagsInput::make('recipients')
+                        //             ->label('Receiver Numbers')
+                        //             ->placeholder('8801XXXXXXXXX')
+                        //             ->required()
+                        //             ->separator(','),
+
+                        //         Forms\Components\FileUpload::make('recipients_csv')
+                        //             ->label('Upload CSV of Numbers')
+                        //             ->helperText('Upload a CSV file containing phone numbers in one column.')
+                        //             ->disk('public')
+                        //             ->directory('recipients')
+                        //             ->acceptedFileTypes(['text/csv', 'text/plain'])
+                        //             ->maxSize(2048),
+                        // ]),
+
+                        // Right column (2nd column)
+                        FormSection::make('Recipients')
                             ->columnSpan(1)
                             ->schema([
+                                Radio::make('input_method')
+                                    ->label('Select Input Method')
+                                    ->options([
+                                        'manual' => 'Manual Entry',
+                                        'csv' => 'Upload CSV File',
+                                    ])
+                                    ->default('manual')
+                                    ->inline()
+                                    ->reactive(),
+
                                 TagsInput::make('recipients')
                                     ->label('Receiver Numbers')
                                     ->placeholder('8801XXXXXXXXX')
                                     ->required()
-                                    ->separator(','),
+                                    ->separator(',')
+                                    ->visible(fn ($get) => $get('input_method') === 'manual'),
 
-                                Forms\Components\FileUpload::make('recipients_csv')
+                                FileUpload::make('recipients_csv')
                                     ->label('Upload CSV of Numbers')
                                     ->helperText('Upload a CSV file containing phone numbers in one column.')
                                     ->disk('public')
                                     ->directory('recipients')
                                     ->acceptedFileTypes(['text/csv', 'text/plain'])
-                                    ->maxSize(2048),
-                            ]),
+                                    ->maxSize(2048)
+                                    ->visible(fn ($get) => $get('input_method') === 'csv'),
+                                    ]),
+
                     ]),
             ]);
     }

@@ -21,12 +21,18 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Infolists\Infolist;
-use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\Section as InfoSection;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\Group;
-use App\Models\MessageTemplate; 
+use App\Models\MessageTemplate;
+use Filament\Forms\Components\Section as FormSection;
+use Filament\Forms\Components\Radio;
+// use Filament\Forms\Components\Html;
+use Filament\Forms\Components\ViewField;
+
+
 
 class BulkSendMessageResource extends Resource
 {
@@ -93,9 +99,53 @@ class BulkSendMessageResource extends Resource
                             ]),
 
                         // Right Column
-                        Forms\Components\Section::make('Recipients')
+                        // Forms\Components\Section::make('Recipients')
+                        //     ->columnSpan(1)
+                        //     ->schema([
+                        //         TagsInput::make('recipients_list')
+                        //             ->label('Receiver Numbers')
+                        //             ->placeholder('8801XXXXXXXXX')
+                        //             ->separator(',')
+                        //             ->required()
+                        //             ->default(fn ($record) => $record?->recipients->pluck('number')->toArray() ?? [])
+                        //             ->afterStateHydrated(function ($component, $state, $record) {
+                        //                 if ($record) {
+                        //                     $component->state($record->recipients->pluck('number')->toArray());
+                        //                 }
+                        //             })
+                        //             ->dehydrateStateUsing(fn ($state) => $state) // keep state during save
+                        //             ->saveRelationshipsUsing(function ($record, $state) {
+                        //                 // $record->recipients()->delete();
+                        //                 // foreach ($state as $number) {
+                        //                 //     $record->recipients()->create(['number' => $number]);
+                        //                 // }
+                        //             }),
+
+                        //         FileUpload::make('recipients_csv')
+                        //             ->label('Upload CSV of Numbers')
+                        //             ->helperText('Upload a CSV file containing phone numbers in one column.')
+                        //             ->disk('public')
+                        //             ->directory('recipients')
+                        //             ->acceptedFileTypes(['text/csv', 'text/plain'])
+                        //             ->maxSize(2048),
+                        //     ]),
+                        // Right column (2nd column)
+                        FormSection::make('Recipients')
                             ->columnSpan(1)
                             ->schema([
+
+                                // Radio button to select input method
+                                Radio::make('input_method')
+                                    ->label('Select Input Method')
+                                    ->options([
+                                        'manual' => 'Manual Entry',
+                                        'csv' => 'Upload CSV File',
+                                    ])
+                                    ->default('manual')
+                                    ->inline()    // horizontal layout
+                                    ->reactive(), // required for live visibility update
+
+                                // Manual input (TagsInput)
                                 TagsInput::make('recipients_list')
                                     ->label('Receiver Numbers')
                                     ->placeholder('8801XXXXXXXXX')
@@ -107,22 +157,30 @@ class BulkSendMessageResource extends Resource
                                             $component->state($record->recipients->pluck('number')->toArray());
                                         }
                                     })
-                                    ->dehydrateStateUsing(fn ($state) => $state) // keep state during save
+                                    ->dehydrateStateUsing(fn ($state) => $state)
                                     ->saveRelationshipsUsing(function ($record, $state) {
                                         // $record->recipients()->delete();
                                         // foreach ($state as $number) {
                                         //     $record->recipients()->create(['number' => $number]);
                                         // }
-                                    }),
+                                    })
+                                    ->visible(fn ($get) => $get('input_method') === 'manual'),
 
+                                // CSV upload
                                 FileUpload::make('recipients_csv')
                                     ->label('Upload CSV of Numbers')
                                     ->helperText('Upload a CSV file containing phone numbers in one column.')
                                     ->disk('public')
                                     ->directory('recipients')
                                     ->acceptedFileTypes(['text/csv', 'text/plain'])
-                                    ->maxSize(2048),
-                            ]),
+                                    ->maxSize(2048)
+                                    ->visible(fn ($get) => $get('input_method') === 'csv'),
+
+                                // Sample CSV download link
+                                ViewField::make('sample_csv_link')
+                                    ->view('filament.user.pages.sample-csv-link')
+                                    ->visible(fn ($get) => $get('input_method') === 'csv'),    
+                                ]),
                     ]),
             ]);
     }

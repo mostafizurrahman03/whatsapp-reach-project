@@ -21,6 +21,9 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\Grid;
 use App\Models\MessageTemplate;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
+
 
 class SendMessageResource extends Resource
 {
@@ -159,6 +162,15 @@ class SendMessageResource extends Resource
             ->filters([
                 // Optional: Filter if needed
             ])
+            ->headerActions([
+            FilamentExportHeaderAction::make('export')
+                ->label('Export Data')
+                ->fileName('bulk_send_message_recipients')
+                ->defaultFormat('xlsx')
+                ->withHiddenColumns() // keeps hidden columns hidden
+                ->color('success')
+                ->icon('heroicon-o-arrow-down-tray'),
+            ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
@@ -168,6 +180,10 @@ class SendMessageResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    FilamentExportBulkAction::make('export-selected')
+                    ->label('Export Selected')
+                    ->fileName('selected_recipients_export')
+                    ->defaultFormat('xlsx'),
                 ]),
             ]);
     }
