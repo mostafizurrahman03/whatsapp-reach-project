@@ -6,6 +6,8 @@ use App\Filament\User\Resources\BulkMediaMessageResource\Pages;
 use App\Filament\User\Resources\BulkMediaMessageResource\RelationManagers\RecipientsRelationManager;
 use App\Models\BulkMediaMessage;
 use App\Models\MessageTemplate;
+use App\Models\Lead;
+use App\Models\Campaign;
 use Filament\Forms;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Form;
@@ -17,7 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
 use Filament\Infolists\Infolist;
-use Filament\Infolists\Components\Section as InfoSection;
+use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ImageEntry;
@@ -26,6 +28,8 @@ use Filament\Infolists\Components\Group;
 use Filament\Forms\Components\Section as FormSection;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\FileUpload;
+// use Filament\Forms\Components\Html;
+use Filament\Forms\Components\ViewField;
 
 
 class BulkMediaMessageResource extends Resource
@@ -77,6 +81,14 @@ class BulkMediaMessageResource extends Resource
                                         //         }
                                         //     })
                                         //     ->helperText('Select a message template to auto-fill message, caption, and attachment.'),
+
+
+                                Forms\Components\Select::make('campaign_id')
+                                    ->label('Select Campaign')
+                                    ->options(fn () => Campaign::where('user_id', auth()->id())->pluck('name', 'id'))
+                                    ->searchable()
+                                    ->required()
+                                    ->visible(fn () => Campaign::where('user_id', auth()->id())->exists()),       
                                 Forms\Components\Select::make('template_id')
                                     ->label('📄 Choose Template')
                                     ->options(MessageTemplate::pluck('name', 'id'))
@@ -164,11 +176,40 @@ class BulkMediaMessageResource extends Resource
                                     ->options([
                                         'manual' => 'Manual Entry',
                                         'csv' => 'Upload CSV File',
+                                        'lead' => 'From Lead List',
                                     ])
                                     ->default('manual')
                                     ->inline()
                                     ->reactive(),
 
+                                
+                                //  Show only the logged-in user’s leads
+                                Select::make('lead_id')
+                                    ->label('Select Lead Name')
+                                    ->options(function () {
+                                        // leads fetch for logged-in user
+                                        $leads = Lead::where('user_id', auth()->id())
+                                            ->select('name', 'id') 
+                                            ->get()
+                                            ->groupBy('name');  
+
+                                        $options = [];
+                                        foreach ($leads as $name => $group) {
+                                            $count = $group->count(); // row count according to name
+                                            // if name null, then shows phone number
+                                            $displayName = $name ?? $group->first()->phone;
+                                            // dropdown option
+                                            $options[$group->first()->id] = "{$displayName} ({$count})";
+                                        }
+
+                                        return $options;
+                                    })
+                                    ->searchable()
+                                    ->placeholder('Select a lead')
+                                    ->visible(fn ($get) => $get('input_method') === 'lead'),
+
+
+        
                                 TagsInput::make('recipients')
                                     ->label('Receiver Numbers')
                                     ->placeholder('8801XXXXXXXXX')
@@ -184,7 +225,14 @@ class BulkMediaMessageResource extends Resource
                                     ->acceptedFileTypes(['text/csv', 'text/plain'])
                                     ->maxSize(2048)
                                     ->visible(fn ($get) => $get('input_method') === 'csv'),
-                                    ]),
+
+
+                                // Sample CSV download link
+                                ViewField::make('sample_csv_link')
+                                    ->view('filament.user.pages.sample-csv-link')
+                                    ->visible(fn ($get) => $get('input_method') === 'csv'),    
+                                ]),
+                               
 
                     ]),
             ]);
@@ -232,7 +280,7 @@ class BulkMediaMessageResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([

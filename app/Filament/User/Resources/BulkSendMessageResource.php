@@ -5,6 +5,7 @@ namespace App\Filament\User\Resources;
 use App\Filament\User\Resources\BulkSendMessageResource\Pages;
 use App\Models\BulkSendMessage;
 use App\Models\MyWhatsappDevice;
+use App\Models\Lead;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Components\Select;
@@ -13,6 +14,7 @@ use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Toggle;
+// use Filament\Forms\Components\Section;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -21,7 +23,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Infolists\Infolist;
-use Filament\Infolists\Components\Section as InfoSection;
+use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\IconEntry;
@@ -140,10 +142,26 @@ class BulkSendMessageResource extends Resource
                                     ->options([
                                         'manual' => 'Manual Entry',
                                         'csv' => 'Upload CSV File',
+                                        'lead' => 'From Lead List',
+
                                     ])
                                     ->default('manual')
                                     ->inline()    // horizontal layout
                                     ->reactive(), // required for live visibility update
+
+
+                                //  Show only the logged-in user’s leads
+                                Select::make('lead_id')
+                                    ->label('Select Lead Name')
+                                    ->options(
+                                        fn () => Lead::query()
+                                            ->where('user_id', auth()->id())
+                                            ->selectRaw("id, COALESCE(name, phone) as display_name") // fallback if name is null
+                                            ->pluck('display_name', 'id')
+                                    )
+                                    ->searchable()
+                                    ->placeholder('Select a lead')
+                                    ->visible(fn ($get) => $get('input_method') === 'lead'),    
 
                                 // Manual input (TagsInput)
                                 TagsInput::make('recipients_list')
@@ -242,7 +260,7 @@ class BulkSendMessageResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
