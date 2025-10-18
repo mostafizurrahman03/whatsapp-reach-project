@@ -20,12 +20,12 @@ class CreateLead extends CreateRecord
         // return Lead::create($data);
           $phones = [];
 
-        // 1️⃣ From TagsInput
+        // From TagsInput
         if (!empty($data['phone'])) {
             $phones = array_merge($phones, explode(',', $data['phone']));
         }
 
-        // 2️⃣ From CSV
+        // From CSV
         if (isset($data['phone_csv']) && $data['phone_csv'] !== null) {
             $csvPath = storage_path('app/public/' . $data['phone_csv']);
             if (file_exists($csvPath)) {
@@ -43,7 +43,7 @@ class CreateLead extends CreateRecord
 
         $lastLead = null;
 
-        // 3️⃣ Insert each phone as a separate Lead row
+        // Insert each phone as a separate Lead row
         foreach ($phones as $phone) {
             $lastLead = Lead::create([
                 'user_id' => $data['user_id'],

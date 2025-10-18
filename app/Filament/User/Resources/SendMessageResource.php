@@ -90,6 +90,7 @@ class SendMessageResource extends Resource
                 Forms\Components\TextInput::make('number')
                     ->label('Receiver Number')
                     ->placeholder('8801XXXXXXXXX')
+                    ->helperText('Only valid phone number is allowed.')
                     ->required(),
 
                 Forms\Components\Select::make('template_id')

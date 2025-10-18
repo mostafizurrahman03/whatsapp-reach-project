@@ -60,8 +60,9 @@ class SendMediaMessageResource extends Resource
                 Forms\Components\TextInput::make('number')
                     ->label('Receiver Number')
                     ->placeholder('8801XXXXXXXXX')
+                    ->helperText('Only valid phone number is allowed.')
                     ->required(),
-                    Forms\Components\Select::make('template_id')
+                Forms\Components\Select::make('template_id')
                     ->label('📄 Choose Template')
                     ->options(MessageTemplate::pluck('name', 'id'))
                     ->searchable()

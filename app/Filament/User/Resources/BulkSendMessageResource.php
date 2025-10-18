@@ -33,6 +33,7 @@ use Filament\Forms\Components\Section as FormSection;
 use Filament\Forms\Components\Radio;
 // use Filament\Forms\Components\Html;
 use Filament\Forms\Components\ViewField;
+use Filament\Notifications\Notification;
 
 
 
@@ -164,25 +165,73 @@ class BulkSendMessageResource extends Resource
                                     ->visible(fn ($get) => $get('input_method') === 'lead'),    
 
                                 // Manual input (TagsInput)
+                                // TagsInput::make('recipients_list')
+                                //     ->label('Receiver Numbers')
+                                //     ->placeholder('8801XXXXXXXXX')
+                                //     ->separator(',')
+                                //     ->required()
+                                //     ->helperText('Enter multiple numbers separated by commas. Only valid phone numbers are allowed.')
+                                //     ->default(fn ($record) => $record?->recipients->pluck('number')->toArray() ?? [])
+                                //     ->afterStateHydrated(function ($component, $state, $record) {
+                                //         if ($record) {
+                                //             $component->state($record->recipients->pluck('number')->toArray());
+                                //         }
+                                //     })
+                                //     ->dehydrateStateUsing(fn ($state) => $state)
+                                //     ->saveRelationshipsUsing(function ($record, $state) {
+                                //         // $record->recipients()->delete();
+                                //         // foreach ($state as $number) {
+                                //         //     $record->recipients()->create(['number' => $number]);
+                                //         // }
+                                //     })
+                                //     ->visible(fn ($get) => $get('input_method') === 'manual'),
+
+                                
+
                                 TagsInput::make('recipients_list')
                                     ->label('Receiver Numbers')
                                     ->placeholder('8801XXXXXXXXX')
                                     ->separator(',')
                                     ->required()
+                                    ->helperText('Enter multiple numbers separated by commas. Only valid Bangladeshi phone numbers are allowed.')
                                     ->default(fn ($record) => $record?->recipients->pluck('number')->toArray() ?? [])
                                     ->afterStateHydrated(function ($component, $state, $record) {
                                         if ($record) {
                                             $component->state($record->recipients->pluck('number')->toArray());
                                         }
                                     })
+                                    ->afterStateUpdated(function ($state, callable $set) {
+                                        if (is_array($state)) {
+                                            $validNumbers = [];
+                                            foreach ($state as $value) {
+                                                $number = preg_replace('/\D/', '', $value); // Remove non-digits
+
+                                                //  Validate Bangladeshi number (+8801XXXXXXXXX / 8801XXXXXXXXX / 01XXXXXXXXX)
+                                                if (preg_match('/^(?:\+?88)?01[3-9]\d{8}$/', $number)) {
+                                                    $validNumbers[] = $value;
+                                                } else {
+                                                    Notification::make()
+                                                        ->title('Invalid Phone Number')
+                                                        ->body("{$value} is not a valid Bangladeshi number.\nFormat: 8801XXXXXXXXX or 01XXXXXXXXX")
+                                                        ->danger()
+                                                        ->send();
+                                                }
+                                            }
+
+                                            //  Remove invalid numbers automatically
+                                            $set('recipients_list', $validNumbers);
+                                        }
+                                    })
                                     ->dehydrateStateUsing(fn ($state) => $state)
                                     ->saveRelationshipsUsing(function ($record, $state) {
+                                        // Optional: handle save manually
                                         // $record->recipients()->delete();
                                         // foreach ($state as $number) {
                                         //     $record->recipients()->create(['number' => $number]);
                                         // }
                                     })
                                     ->visible(fn ($get) => $get('input_method') === 'manual'),
+
 
                                 // CSV upload
                                 FileUpload::make('recipients_csv')

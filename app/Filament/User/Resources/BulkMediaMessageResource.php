@@ -30,6 +30,14 @@ use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\FileUpload;
 // use Filament\Forms\Components\Html;
 use Filament\Forms\Components\ViewField;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Support\Enums\ActionSize;
+use Filament\Support\Enums\IconPosition;
+use Filament\Notifications\Notification;
+
+
+
 
 
 class BulkMediaMessageResource extends Resource
@@ -210,13 +218,77 @@ class BulkMediaMessageResource extends Resource
 
 
         
+                                // TagsInput::make('recipients')
+                                //     ->label('Receiver Numbers')
+                                //     ->placeholder('8801XXXXXXXXX')
+                                //     ->required()
+                                //     ->separator(',')
+                                //     ->visible(fn ($get) => $get('input_method') === 'manual')
+                                //     // ->helperText('Select a message template to auto-fill message, caption, and attachment.')
+                                //     ->hint('Enter multiple numbers separated by commas. Only phone numbers are allowed.')
+                                //     ->hintIcon('heroicon-o-information-circle')
+                                //     ->hintColor('success'), // icon color
+
+                                // TagsInput::make('recipients')
+                                //     ->label('Receiver Numbers')
+                                //     ->placeholder('8801XXXXXXXXX')
+                                //     ->required()
+                                //     ->reactive()
+                                //     ->separator(',')
+                                //     ->visible(fn ($get) => $get('input_method') === 'manual')
+                                //     ->helperText('Enter multiple numbers separated by commas. Only valid phone numbers are allowed.')
+                                //     // ->hint('Enter multiple numbers separated by commas. Only valid phone numbers are allowed.')
+                                //     // ->hintIcon('heroicon-o-information-circle')
+                                //     // ->hintColor('success')
+                                //     ->rules([
+                                //         'required',
+                                //         'array',
+                                //         function ($attribute, $values, $fail) {
+                                //             foreach ($values as $value) {
+                                //                 // Remove spaces and symbols
+                                //                 $number = preg_replace('/\D/', '', $value);
+
+                                //                 // Validate Bangladeshi phone number (13 digits with 88 prefix)
+                                //                 if (!preg_match('/^88(01[3-9]\d{8})$/', $number)) {
+                                //                     $fail("Each number in {$attribute} must be a valid Bangladeshi phone number.");
+                                //                 }
+                                //             }
+                                //         },
+                                //     ]),
+
                                 TagsInput::make('recipients')
                                     ->label('Receiver Numbers')
                                     ->placeholder('8801XXXXXXXXX')
                                     ->required()
+                                    ->reactive()
                                     ->separator(',')
-                                    ->visible(fn ($get) => $get('input_method') === 'manual'),
+                                    ->visible(fn ($get) => $get('input_method') === 'manual')
+                                    ->helperText('Enter multiple numbers separated by commas. Only valid Bangladeshi phone numbers are allowed.')
+                                    ->afterStateUpdated(function ($state, callable $set) {
+                                        if (is_array($state)) {
+                                            foreach ($state as $value) {
+                                                // Remove all non-digit characters
+                                                $number = preg_replace('/\D/', '', $value);
 
+                                                // Validate Bangladeshi number format (+8801XXXXXXXXX or 8801XXXXXXXXX or 01XXXXXXXXX)
+                                                if (!preg_match('/^(?:\+?88)?01[3-9]\d{8}$/', $number)) {
+                                                    Notification::make()
+                                                        ->title('Invalid Phone Number')
+                                                        ->body("{$value} is not a valid Bangladeshi number. Format: 8801XXXXXXXXX")
+                                                        ->danger()
+                                                        ->send();
+
+                                                    // Optionally, remove invalid numbers
+                                                    $set('recipients', array_filter($state, fn ($num) => $num !== $value));
+
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }),
+
+                                    
+                                
                                 FileUpload::make('recipients_csv')
                                     ->label('Upload CSV of Numbers')
                                     ->helperText('Upload a CSV file containing phone numbers in one column.')
