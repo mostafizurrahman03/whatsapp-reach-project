@@ -284,6 +284,7 @@ class BulkSendMessageResource extends Resource
                     ->toggleable()
                     ->sortable(),
             ])
+            ->defaultSort('created_at', direction: 'desc')
             ->filters([
                 TernaryFilter::make('is_sent')
                     ->label('Sent status')

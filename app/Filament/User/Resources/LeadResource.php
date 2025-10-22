@@ -3,6 +3,7 @@
 namespace App\Filament\User\Resources;
 
 use App\Filament\User\Resources\LeadResource\Pages;
+use App\Filament\User\Resources\LeadResource\RelationManagers\RecipientsRelationManager;
 use App\Models\Lead;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -16,6 +17,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Radio;
+use Filament\Forms\Components\ViewField;
+use Filament\Tables\Enums\FiltersLayout;
 
 class LeadResource extends Resource
 {
@@ -33,7 +37,7 @@ class LeadResource extends Resource
     {
         return $form
             ->schema([
-                Grid::make(2) // 2-column grid
+                Grid::make(2)
                     ->schema([
                         // Left Column: Lead Details
                         Section::make('Details')
@@ -43,12 +47,6 @@ class LeadResource extends Resource
                                     ->label('Name')
                                     ->maxLength(150)
                                     ->nullable(),
-
-                                // TextInput::make('email')
-                                //     ->label('Email')
-                                //     ->email()
-                                //     ->maxLength(150)
-                                //     ->nullable(),
 
                                 TextInput::make('source')
                                     ->label('Source')
@@ -67,23 +65,46 @@ class LeadResource extends Resource
                                     ->required(),
                             ]),
 
-                        // Right Column: Recipients (multiple phone numbers)
+                        //  Right Column: Recipients
                         Section::make('Recipients')
+                            ->description('Add recipients manually or upload from a CSV file.')
                             ->columnSpan(1)
                             ->schema([
+                                // Input method selection
+                                Radio::make('input_method')
+                                    ->label('Select Input Method')
+                                    ->options([
+                                        'manual' => 'Manual Entry',
+                                        'csv' => 'Upload CSV File',
+                                    ])
+                                    ->default('manual')
+                                    ->inline()
+                                    ->reactive(),
+
+                                // Manual phone input
                                 TagsInput::make('phone')
                                     ->label('Phone Numbers')
                                     ->placeholder('8801XXXXXXXXX')
-                                    ->required()
-                                    ->separator(','),
+                                    ->required(fn ($get) => $get('input_method') === 'manual')
+                                    ->separator(',')
+                                    ->helperText('Enter one or more phone numbers separated by commas.')
+                                    ->visible(fn ($get) => $get('input_method') === 'manual'),
 
+                                // CSV upload
                                 FileUpload::make('phone_csv')
                                     ->label('Upload CSV of Phone Numbers')
                                     ->helperText('Upload a CSV file containing phone numbers in one column.')
                                     ->disk('public')
                                     ->directory('leads')
                                     ->acceptedFileTypes(['text/csv', 'text/plain'])
-                                    ->maxSize(2048),
+                                    ->maxSize(2048)
+                                    ->required(fn ($get) => $get('input_method') === 'csv')
+                                    ->visible(fn ($get) => $get('input_method') === 'csv'),
+
+                                // Sample CSV download link (custom Blade view)
+                                ViewField::make('sample_csv_link')
+                                    ->view('filament.user.pages.sample-csv-link')
+                                    ->visible(fn ($get) => $get('input_method') === 'csv'),
                             ]),
                     ]),
             ]);
@@ -106,6 +127,7 @@ class LeadResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')->dateTime()->sortable(),
             ])
+            ->defaultSort('created_at', direction: 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
@@ -114,18 +136,33 @@ class LeadResource extends Resource
                         'converted'=>'Converted',
                         'lost'=>'Lost',
                     ]),
-            ])
+                     //  Date Range Filter
+                Tables\Filters\Filter::make('created_at')
+                    ->label('Created Date')
+                    ->form([
+                        Forms\Components\DatePicker::make('from')->label('From'),
+                        Forms\Components\DatePicker::make('until')->label('Until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when($data['from'] ?? null, fn ($q, $date) => $q->whereDate('created_at', '>=', $date))
+                            ->when($data['until'] ?? null, fn ($q, $date) => $q->whereDate('created_at', '<=', $date));
+                    })->columnSpan(2)->columns(2)   
+            ],layout: FiltersLayout::AboveContent)
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
+    
 
     public static function getRelations(): array
     {
         return [
+            
             //
         ];
     }

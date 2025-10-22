@@ -55,6 +55,7 @@ class MyWhatsappDeviceResource extends Resource
                     ->label('Connection Status'),
                 Tables\Columns\TextColumn::make('created_at')->dateTime(),
             ])
+            ->defaultSort('created_at', direction: 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->options([

@@ -35,4 +35,10 @@ class Lead extends Model
                     ->withPivot('status', 'sent_at')
                     ->withTimestamps();
     }
+     // Recipients relation
+    public function recipients()
+    {
+        return $this->hasMany(LeadResource::class, 'lead_id');
+    }
+
 }

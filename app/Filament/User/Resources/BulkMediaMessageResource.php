@@ -347,6 +347,7 @@ class BulkMediaMessageResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->label('Created At')->toggleable()->sortable(), 
 
             ])
+            ->defaultSort('created_at', direction: 'desc')
             ->filters([
                 //
             ])

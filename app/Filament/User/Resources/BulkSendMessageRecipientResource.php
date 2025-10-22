@@ -11,6 +11,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Enums\FiltersLayout;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
@@ -115,7 +116,16 @@ class BulkSendMessageRecipientResource extends Resource
                     ->dateTime()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
+            ->defaultSort('created_at', direction: 'desc')
             ->filters([
+                
+                 // Device Filter
+                Tables\Filters\SelectFilter::make('bulkSendMessage.device_id')
+                    ->label('Sender Device')
+                    ->relationship('bulkSendMessage.device', 'device_id')
+                    ->searchable()
+                    ->preload(),
+
                 // Sent Status Filter
                 TernaryFilter::make('is_sent')
                     ->label('Sent Status')
@@ -128,6 +138,7 @@ class BulkSendMessageRecipientResource extends Resource
                         blank: fn (Builder $query) => $query,
                     ),
 
+               
                 // Created Date Filter
                 Tables\Filters\Filter::make('created_at')
                     ->label('Created Date')
@@ -139,15 +150,10 @@ class BulkSendMessageRecipientResource extends Resource
                         return $query
                             ->when($data['from'] ?? null, fn ($q, $date) => $q->whereDate('created_at', '>=', $date))
                             ->when($data['until'] ?? null, fn ($q, $date) => $q->whereDate('created_at', '<=', $date));
-                    }),
+                    })->columnSpan(2)->columns(2),
 
-                // Device Filter
-                Tables\Filters\SelectFilter::make('bulkSendMessage.device_id')
-                    ->label('Sender Device')
-                    ->relationship('bulkSendMessage.device', 'device_id')
-                    ->searchable()
-                    ->preload(),
-            ])
+                
+            ],layout: FiltersLayout::AboveContent)
             ->headerActions([
             FilamentExportHeaderAction::make('export')
                 ->label('Export Data')

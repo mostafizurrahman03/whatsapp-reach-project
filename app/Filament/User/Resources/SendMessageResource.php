@@ -160,6 +160,7 @@ class SendMessageResource extends Resource
                     ->dateTime()
                     ->toggleable(), // <-- Toggleable
             ])
+            ->defaultSort('created_at', direction: 'desc')
             ->filters([
                 // Optional: Filter if needed
             ])

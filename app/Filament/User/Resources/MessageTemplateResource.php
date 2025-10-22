@@ -133,6 +133,7 @@ class MessageTemplateResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')->dateTime()->sortable(),
             ])
+            ->defaultSort('created_at', direction: 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('type')
                     ->options([

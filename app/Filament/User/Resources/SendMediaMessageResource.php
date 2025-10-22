@@ -164,6 +164,7 @@ class SendMediaMessageResource extends Resource
 
 
             ])
+            ->defaultSort('created_at', direction: 'desc')
             ->filters([
                 //
             ])

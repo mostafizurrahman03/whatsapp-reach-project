@@ -27,8 +27,9 @@ class CampaignLeadResource extends Resource
     protected static ?string $navigationLabel = 'Campaign Leads';
     protected static ?string $pluralLabel = 'Campaign Leads';
     protected static ?string $modelLabel = 'Campaign Lead';
-    // protected static ?string $navigationGroup = 'Campaign Management';
-    // protected static ?int $navigationSort = 2;
+    protected static ?string $navigationGroup = 'Campaign Management';
+    protected static ?int $navigationSort = 2;
+    protected static bool $shouldRegisterNavigation = false; 
 
     public static function form(Form $form): Form
     {
@@ -178,7 +179,7 @@ class CampaignLeadResource extends Resource
             ]);
     }
 
-    // 🔒 Non-admin user শুধুমাত্র নিজের campaign leads দেখতে পাবে
+    //  Non-admin user শুধুমাত্র নিজের campaign leads দেখতে পাবে
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
