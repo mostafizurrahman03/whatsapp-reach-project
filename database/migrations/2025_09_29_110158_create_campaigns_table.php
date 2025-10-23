@@ -13,16 +13,15 @@ return new class extends Migration
     {
         Schema::create('campaigns', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id'); // owner
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // owner
             $table->string('name', 150);
-            $table->unsignedBigInteger('template_id');
             $table->enum('channel', ['whatsapp','sms','email'])->default('whatsapp');
             $table->enum('status', ['draft','scheduled','running','completed','failed'])->default('draft');
             $table->timestamp('scheduled_at')->nullable();
             $table->timestamps();
         
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('template_id')->references('id')->on('message_templates')->onDelete('cascade');
+            $table->softDeletes(); // optional, future-safe
+            
         });
         
     }

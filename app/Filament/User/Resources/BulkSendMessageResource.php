@@ -6,6 +6,7 @@ use App\Filament\User\Resources\BulkSendMessageResource\Pages;
 use App\Models\BulkSendMessage;
 use App\Models\MyWhatsappDevice;
 use App\Models\Lead;
+use App\Models\Campaign;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Components\Select;
@@ -73,6 +74,12 @@ class BulkSendMessageResource extends Resource
                                     ->searchable()
                                     ->preload(),
 
+                                Forms\Components\Select::make('campaign_id')
+                                    ->label('Select Campaign')
+                                    ->options(fn () => Campaign::where('user_id', auth()->id())->pluck('name', 'id'))
+                                    ->searchable()
+                                    ->required()
+                                    ->visible(fn () => Campaign::where('user_id', auth()->id())->exists()),   
                                 // Template Selector + Auto-fill
                                 Select::make('template_id')
                                     ->label('📄 Choose Template')
@@ -267,6 +274,12 @@ class BulkSendMessageResource extends Resource
                     ->limit(25)
                     ->getStateUsing(fn ($record) => $record->recipients->pluck('number')->implode(', ')),
 
+                TextColumn::make('campaign.name')
+                    ->label('Campaign')
+                    ->limit(20)
+                    ->searchable()
+                    ->default('N/A')
+                    ->sortable(),    
                 TextColumn::make('message')
                     ->label('Message')
                     ->limit(30)
@@ -335,7 +348,15 @@ class BulkSendMessageResource extends Resource
                                     ->placeholder('N/A')
                                     ->badge()
                                     ->color('success'),
-
+                                
+                               TextEntry::make('campaign.name')
+                                    ->label('Campaign')
+                                    ->default('N/A')
+                                    ->placeholder('N/A')
+                                    ->limit(30)
+                                    ->badge() 
+                                    ->color('primary'), 
+                                    
                                 TextEntry::make('message')
                                     ->label('Message Content')
                                     ->markdown()

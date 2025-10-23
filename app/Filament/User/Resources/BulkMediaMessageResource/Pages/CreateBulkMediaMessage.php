@@ -20,6 +20,7 @@ class CreateBulkMediaMessage extends CreateRecord
         $message = BulkMediaMessage::create([
             'user_id'   => auth()->id(),
             'device_id' => $data['device_id'],
+            'campaign_id' => $data['campaign_id'],
             'message'   => $data['message'] ?? '',
             'caption'   => $data['caption'] ?? '',
             'media_url' => $data['media_url'] ?? null,

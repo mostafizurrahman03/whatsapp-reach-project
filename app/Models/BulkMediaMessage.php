@@ -12,6 +12,7 @@ class BulkMediaMessage extends Model
     protected $fillable = [
         'device_id',
         'user_id',
+        'campaign_id',
         'message',
         'caption',
         'media_url',
@@ -35,6 +36,12 @@ class BulkMediaMessage extends Model
     public function recipients()
     {
         return $this->hasMany(BulkMediaMessageRecipient::class, 'bulk_media_message_id');
+    }
+
+    // Campaign relation
+    public function campaign()
+    {
+        return $this->belongsTo(Campaign::class);
     }
 
 }

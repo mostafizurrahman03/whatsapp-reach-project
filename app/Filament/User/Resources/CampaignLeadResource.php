@@ -29,7 +29,7 @@ class CampaignLeadResource extends Resource
     protected static ?string $modelLabel = 'Campaign Lead';
     protected static ?string $navigationGroup = 'Campaign Management';
     protected static ?int $navigationSort = 2;
-    protected static bool $shouldRegisterNavigation = false; 
+    protected static bool $shouldRegisterNavigation = false; //to hide the navigation menu
 
     public static function form(Form $form): Form
     {
@@ -132,7 +132,7 @@ class CampaignLeadResource extends Resource
                             $rows = $sheet->toArray();
                         }
 
-                        // প্রথম row যদি header হয়, skip করো
+                        // If first row is header, just skip it
                         if (isset($rows[0]) && str_contains(strtolower(implode(',', $rows[0])), 'phone')) {
                             array_shift($rows);
                         }
@@ -179,7 +179,7 @@ class CampaignLeadResource extends Resource
             ]);
     }
 
-    //  Non-admin user শুধুমাত্র নিজের campaign leads দেখতে পাবে
+    //  Non-admin user can see only own campaign leads
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();

@@ -19,6 +19,7 @@ class CreateBulkSendMessage extends CreateRecord
         $message = BulkSendMessage::create([
             'user_id'   => auth()->id(),
             'device_id' => $data['device_id'],
+            'campaign_id' => $data['campaign_id'],
             'message'   => $data['message'] ?? '',
             'is_sent'   => false,
             'total_recipients' => 0,

@@ -12,6 +12,7 @@ class BulkSendMessage extends Model
     protected $fillable = [
         'device_id',
         'user_id',
+        'campaign_id',
         'message',
         'is_sent',
         'sent_at',
@@ -30,5 +31,11 @@ class BulkSendMessage extends Model
     public function device()
     {
         return $this->belongsTo(MyWhatsappDevice::class, 'device_id', 'device_id');
+    }
+    
+    // Campaign relation
+    public function campaign()
+    {
+        return $this->belongsTo(Campaign::class);
     }
 }

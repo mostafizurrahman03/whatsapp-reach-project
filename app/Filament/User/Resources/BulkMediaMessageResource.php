@@ -323,12 +323,17 @@ class BulkMediaMessageResource extends Resource
                 // Tables\Columns\TextColumn::make('number')->label('Receiver')->sortable(),
                 Tables\Columns\TextColumn::make('receivers')
                     ->label('Receivers')
-                    ->limit(20)
+                    ->limit(15)
                     ->getStateUsing(fn ($record) => $record->recipients->pluck('number')->implode(', ')),
-
+                Tables\Columns\TextColumn::make('campaign.name')
+                    ->label('Campaign')
+                    ->limit(20)
+                    ->searchable()
+                    ->default('N/A')
+                    ->sortable(), 
                 Tables\Columns\TextColumn::make('message')
                     ->label('Message')
-                    ->limit(20)
+                    ->limit(15)
                     ->searchable()
                     ->sortable(), 
 
@@ -382,6 +387,14 @@ class BulkMediaMessageResource extends Resource
                                     ->placeholder('N/A')
                                     ->badge()
                                     ->color('success'),
+
+                                TextEntry::make('campaign.name')
+                                    ->label('Campaign')
+                                    ->default('N/A')
+                                    ->placeholder('N/A')
+                                    ->limit(30)
+                                    ->badge() 
+                                    ->color('primary'), 
 
                                 TextEntry::make('message')
                                     ->label('Message Content')
