@@ -26,4 +26,10 @@ class BulkMediaMessageRecipient extends Model
     {
         return $this->belongsTo(BulkMediaMessage::class, 'bulk_media_message_id');
     }
+    
+    // Campaign relation
+    public function campaign()
+    {
+        return $this->belongsTo(Campaign::class,'campaign_id','id');
+    }
 }

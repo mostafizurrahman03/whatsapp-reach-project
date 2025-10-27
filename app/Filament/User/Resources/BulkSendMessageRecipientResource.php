@@ -4,6 +4,7 @@ namespace App\Filament\User\Resources;
 
 use App\Filament\User\Resources\BulkSendMessageRecipientResource\Pages;
 use App\Models\BulkSendMessageRecipient;
+use App\Models\Campaign;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -84,6 +85,11 @@ class BulkSendMessageRecipientResource extends Resource
                         });
                     }),
 
+                // Campaign
+                TextColumn::make('bulkSendMessage.campaign.name')
+                    ->label('campaign')
+                    ->limit(20)
+                    ->tooltip(fn ($record) => $record->bulkSendMessage?->campaign?->name),
                 // Message Title/Body
                 TextColumn::make('bulkSendMessage.message')
                     ->label('Message')
@@ -126,6 +132,29 @@ class BulkSendMessageRecipientResource extends Resource
                     ->searchable()
                     ->preload(),
 
+                 // Campaign Filter
+                // Tables\Filters\SelectFilter::make('bulkSendMessage.campaign_id')
+                //     ->label('Campaign')
+                //     ->relationship('bulkSendMessage.campaign', 'name')
+                //     ->placeholder('All')
+                //     ->searchable()
+                //     ->preload(),
+
+                 Tables\Filters\SelectFilter::make('bulk_send_message_id')
+                    ->label('Campaign')
+                    ->options(Campaign::pluck('name', 'id'))
+                    ->placeholder('All')
+                    ->searchable()
+                    ->query(function (Builder $query, array $data) {
+                        if ($data['value']) {
+                            // Filter by the selected campaign
+                            $query->whereHas('bulkSendMessage.campaign', function ($q) use ($data) {
+                                $q->where('id', $data['value']);
+                            });
+                        }
+                    })
+                    ->preload(),    
+
                 // Sent Status Filter
                 TernaryFilter::make('is_sent')
                     ->label('Sent Status')
@@ -164,7 +193,7 @@ class BulkSendMessageRecipientResource extends Resource
                 ->icon('heroicon-o-arrow-down-tray'),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([

@@ -30,6 +30,12 @@ class BulkSendMessageRecipient extends Model
     }
     protected $table = 'bulk_send_message_recipients';
 
+    // Campaign relation
+    public function campaign()
+    {
+        return $this->belongsTo(Campaign::class,'campaign_id','id');
+    }
+
    
 
 }

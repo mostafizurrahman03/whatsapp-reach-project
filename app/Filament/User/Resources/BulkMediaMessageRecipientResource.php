@@ -4,6 +4,7 @@ namespace App\Filament\User\Resources;
 
 use App\Filament\User\Resources\BulkMediaMessageRecipientResource\Pages;
 use App\Models\BulkMediaMessageRecipient;
+use App\Models\Campaign;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -83,6 +84,12 @@ class BulkMediaMessageRecipientResource extends Resource
                         });
                     }),
 
+                // Campaign
+                TextColumn::make('bulkMediaMessage.campaign.name')
+                    ->label('campaign')
+                    ->limit(20)
+                    ->tooltip(fn ($record) => $record->bulkMediaMessage?->campaign?->name),
+
                 // Message Body
                 TextColumn::make('bulkMediaMessage.message')
                     ->label('Message')
@@ -123,7 +130,33 @@ class BulkMediaMessageRecipientResource extends Resource
                     ->placeholder('All')
                     ->searchable()
                     ->preload(),
-                 //  Sent Status Filter
+                 
+                
+                // Campaign Filter
+                // Tables\Filters\SelectFilter::make('bulkMediaMessage.campaign_id')
+                //     ->label('Campaign')
+                //     ->relationship('bulkMediaMessage.campaign', 'name')
+                //     ->placeholder('All')
+                //     ->searchable()
+                //     ->preload(),
+
+                  Tables\Filters\SelectFilter::make('bulk_media_message_id')
+                    ->label('Campaign')
+                    ->options(Campaign::pluck('name', 'id'))
+                    ->placeholder('All')
+                    ->searchable()
+                    ->query(function (Builder $query, array $data) {
+                        if ($data['value']) {
+                            // Filter by the selected campaign
+                            $query->whereHas('bulkMediaMessage.campaign', function ($q) use ($data) {
+                                $q->where('id', $data['value']);
+                            });
+                        }
+                    })
+                    ->preload(),
+
+
+                //  Sent Status Filter
                 Tables\Filters\TernaryFilter::make('is_sent')
                     ->label('Sent Status')
                     ->placeholder('All')
