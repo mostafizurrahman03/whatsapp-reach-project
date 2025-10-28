@@ -1,7 +1,7 @@
 <?php
 
-// namespace App\Filament\Resources;
-namespace App\Filament\Admin\Resources;
+namespace App\Filament\Resources;
+// namespace App\Filament\Admin\Resources;
 
 
 use App\Filament\Admin\Resources\RoleResource\Pages;

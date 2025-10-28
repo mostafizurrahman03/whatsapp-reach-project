@@ -89,11 +89,13 @@ class BulkSendMessageRecipientResource extends Resource
                 TextColumn::make('bulkSendMessage.campaign.name')
                     ->label('campaign')
                     ->limit(20)
+                    ->searchable()
                     ->tooltip(fn ($record) => $record->bulkSendMessage?->campaign?->name),
                 // Message Title/Body
                 TextColumn::make('bulkSendMessage.message')
                     ->label('Message')
                     ->limit(20)
+                    ->searchable()
                     ->tooltip(fn ($record) => $record->bulkSendMessage?->message),
 
                 // Recipient Number

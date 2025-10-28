@@ -88,18 +88,21 @@ class BulkMediaMessageRecipientResource extends Resource
                 TextColumn::make('bulkMediaMessage.campaign.name')
                     ->label('campaign')
                     ->limit(20)
+                    ->searchable()
                     ->tooltip(fn ($record) => $record->bulkMediaMessage?->campaign?->name),
 
                 // Message Body
                 TextColumn::make('bulkMediaMessage.message')
                     ->label('Message')
                     ->limit(20)
+                    ->searchable()
                     ->tooltip(fn ($record) => $record->bulkMediaMessage?->message),
 
                 // Recipient
                 TextColumn::make('number')
                     ->label('Recipient')
                     ->sortable()
+                    ->limit(20)
                     ->searchable(),
 
                 // Sent status
@@ -140,7 +143,7 @@ class BulkMediaMessageRecipientResource extends Resource
                 //     ->searchable()
                 //     ->preload(),
 
-                  Tables\Filters\SelectFilter::make('bulk_media_message_id')
+                Tables\Filters\SelectFilter::make('bulk_media_message_id')
                     ->label('Campaign')
                     ->options(Campaign::pluck('name', 'id'))
                     ->placeholder('All')
