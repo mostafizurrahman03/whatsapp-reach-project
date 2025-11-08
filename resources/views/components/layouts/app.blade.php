@@ -23,7 +23,7 @@
             <div class="hidden sm:flex items-center gap-6">
                 <ul class="flex items-center gap-6 text-lg font-medium">
                     <li>
-                        <a href="{{ route('features') }}" class="px-1.5 py-1 rounded transition-colors {{ request()->routeIs('features') ? 'text-[#0F7B71]' : 'text-gray-700 hover:text-[#0F7B71]' }}">Whatsapp Integrations</a>
+                        <a href="{{ route('whats-app-integration') }}" class="px-1.5 py-1 rounded transition-colors {{ request()->routeIs('whats-app-integration') ? 'text-[#0F7B71]' : 'text-gray-700 hover:text-[#0F7B71]' }}">Whatsapp Integration</a>
                     </li>
                     <li>
                         <a href="{{ route('features') }}" class="px-1.5 py-1 rounded transition-colors {{ request()->routeIs('features') ? 'text-[#0F7B71]' : 'text-gray-700 hover:text-[#0F7B71]' }}">Features</a>

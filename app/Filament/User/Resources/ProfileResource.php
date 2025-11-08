@@ -31,7 +31,7 @@ class ProfileResource extends Resource
     protected static ?int $navigationSort = 6;
 
     /**
-     * শুধু logged-in user এর প্রোফাইল query হবে
+     * Only logged-in user's profile will be queried
      */
     public static function getEloquentQuery(): Builder
     {

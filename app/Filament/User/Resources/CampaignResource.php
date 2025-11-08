@@ -91,9 +91,17 @@ class CampaignResource extends Resource
                 // Tables\Columns\TextColumn::make('template.name')->label('Template'),
                 Tables\Columns\TextColumn::make('channel')->badge(),
                 Tables\Columns\TextColumn::make('status')->badge(),
-                Tables\Columns\TextColumn::make('scheduled_at')->dateTime()->sortable(),
-                Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),
-                Tables\Columns\TextColumn::make('updated_at')->dateTime()->sortable(),
+                Tables\Columns\TextColumn::make('scheduled_at')->dateTime()->sortable()->toggleable(),
+                Tables\Columns\TextColumn::make('created_at')->toggleable()
+                ->dateTime()
+                ->sortable(),
+                // ->dateTime('d M Y H:i:s')  // format
+                // ->timezone('Asia/Dhaka'), // local timezone
+                Tables\Columns\TextColumn::make('updated_at')->toggleable()
+                ->dateTime()
+                // ->dateTime('d M Y H:i:s')  // format
+                // ->timezone('Asia/Dhaka') // local timezone
+                ->sortable(),
             ])
             ->defaultSort('created_at', direction: 'desc')
             ->filters([

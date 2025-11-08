@@ -23,6 +23,7 @@ use Filament\Infolists\Components\Grid;
 use App\Models\MessageTemplate;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
 use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
+use Filament\Tables\Enums\FiltersLayout;
 
 
 class SendMessageResource extends Resource
@@ -149,7 +150,7 @@ class SendMessageResource extends Resource
                 Tables\Columns\TextColumn::make('message')
                     ->label('Message')
                     ->searchable()
-                    ->limit(25),
+                    ->limit(20),
 
                 Tables\Columns\IconColumn::make('is_sent')
                     ->label('Sent')
@@ -158,12 +159,52 @@ class SendMessageResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created At')
                     ->dateTime()
-                    ->toggleable(), // <-- Toggleable
+                    ->toggleable() // <-- Toggleable
+                    ->sortable(),
             ])
             ->defaultSort('created_at', direction: 'desc')
             ->filters([
-                // Optional: Filter if needed
-            ])
+                            
+                //  Device (Sender) Filter
+                Tables\Filters\SelectFilter::make('device_id')
+                    ->label('Sender Device')
+                    ->options(
+                        SendMessage::query()
+                            ->whereNotNull('device_id')
+                            ->distinct()
+                            ->pluck('device_id', 'device_id')
+                    )
+                    ->searchable()
+                    ->placeholder('All Devices')
+                    ->preload(),
+
+                // Sent Status Filter
+                Tables\Filters\TernaryFilter::make('is_sent')
+                    ->label('Sent Status')
+                    ->placeholder('All')
+                    ->trueLabel('Sent')
+                    ->falseLabel('Not Sent')
+                    ->queries(
+                        true: fn (Builder $query) => $query->where('is_sent', true),
+                        false: fn (Builder $query) => $query->where('is_sent', false),
+                        blank: fn (Builder $query) => $query,
+                    ),
+
+                // Date Range Filter
+                Tables\Filters\Filter::make('created_at')
+                    ->label('Created Date')
+                    ->form([
+                        Forms\Components\DatePicker::make('from')->label('From'),
+                        Forms\Components\DatePicker::make('until')->label('Until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when($data['from'] ?? null, fn ($q, $date) => $q->whereDate('created_at', '>=', $date))
+                            ->when($data['until'] ?? null, fn ($q, $date) => $q->whereDate('created_at', '<=', $date));
+                    })
+                    ->columnSpan(2)->columns(2),
+
+            ],layout: FiltersLayout::AboveContent)
             ->headerActions([
             FilamentExportHeaderAction::make('export')
                 ->label('Export Data')
@@ -175,7 +216,7 @@ class SendMessageResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                // Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->actionsColumnLabel('Action')

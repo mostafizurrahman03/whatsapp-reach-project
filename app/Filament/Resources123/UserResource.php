@@ -40,11 +40,11 @@ class UserResource extends Resource
 
         Forms\Components\TextInput::make('password')
             ->password()
-            ->required(fn ($record) => $record === null) // update হলে password optional
+            ->required(fn ($record) => $record === null) // password optional only if updated at.
             ->dehydrateStateUsing(fn ($state) => $state ? Hash::make($state) : null)
             ->maxLength(255),
 
-        //  Role Assign Field
+        // Role Assign Field
         Forms\Components\Select::make('roles')
             ->label('Assign Role')
             ->multiple()

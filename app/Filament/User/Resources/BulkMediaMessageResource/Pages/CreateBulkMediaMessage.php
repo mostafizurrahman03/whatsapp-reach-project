@@ -5,6 +5,7 @@ namespace App\Filament\User\Resources\BulkMediaMessageResource\Pages;
 use App\Filament\User\Resources\BulkMediaMessageResource;
 use Filament\Resources\Pages\CreateRecord;
 use App\Models\BulkMediaMessage;
+use App\Models\Lead;                        
 use App\Models\BulkMediaMessageRecipient;
 use Illuminate\Support\Facades\Http;
 use Filament\Notifications\Notification;
@@ -82,6 +83,36 @@ class CreateBulkMediaMessage extends CreateRecord
                 $recipients = array_unique($recipients);
             }
         }
+
+        // 4. Prepare recipients from Lead List
+if (($data['input_method'] ?? null) === 'lead' && !empty($data['lead_id'])) {
+    $lead = Lead::find($data['lead_id']);
+
+    if ($lead) {
+        // Find all leads that share the same name (grouped by UI)
+        $leadNumbers = Lead::where('name', $lead->name)
+            ->pluck('phone')
+            ->toArray();
+
+        // Normalize numbers from leads
+        foreach ($leadNumbers as $phone) {
+            $normalized = preg_replace('/\D/', '', $phone);
+
+            if (str_starts_with($normalized, '0')) {
+                $normalized = '88' . $normalized;
+            } elseif (!str_starts_with($normalized, '88')) {
+                $normalized = '88' . $normalized;
+            }
+
+            if (strlen($normalized) === 13) {
+                $recipients[] = $normalized;
+            }
+        }
+    }
+}
+$recipients = array_unique($recipients);
+
+
 
         // Validate recipients
         $recipients = array_filter($recipients, function ($number) {

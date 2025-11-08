@@ -38,8 +38,6 @@ use Filament\Notifications\Notification;
 
 
 
-
-
 class BulkMediaMessageResource extends Resource
 {
     protected static ?string $model = BulkMediaMessage::class;

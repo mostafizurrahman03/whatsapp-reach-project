@@ -130,8 +130,8 @@ class MessageTemplateResource extends Resource
                     ->placeholder('N/A'),
                 
 
-                Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),
-                Tables\Columns\TextColumn::make('updated_at')->dateTime()->sortable(),
+                Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable()->toggleable(),
+                Tables\Columns\TextColumn::make('updated_at')->dateTime()->sortable()->toggleable(),
             ])
             ->defaultSort('created_at', direction: 'desc')
             ->filters([

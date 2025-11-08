@@ -20,6 +20,7 @@ use App\Http\Livewire\HomePage;
 use App\Http\Livewire\FeaturesPage;
 use App\Http\Livewire\PricingPage;
 use App\Http\Livewire\ContactPage;
+use App\Http\Livewire\WhatsAppIntegrationPage;
 
 Route::get('/user', function () {
     return redirect()->route('filament.user.auth.login');
@@ -34,3 +35,5 @@ Route::get('/', HomePage::class)->name('home');
 Route::get('/features', FeaturesPage::class)->name('features');
 Route::get('/pricing', PricingPage::class)->name('pricing');
 Route::get('/contact', ContactPage::class)->name('contact');
+Route::get('/whats-app-integration', WhatsAppIntegrationPage::class)->name('whats-app-integration');
+    

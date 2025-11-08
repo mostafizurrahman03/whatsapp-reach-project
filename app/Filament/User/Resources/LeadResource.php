@@ -20,6 +20,8 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\ViewField;
 use Filament\Tables\Enums\FiltersLayout;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
 
 class LeadResource extends Resource
 {
@@ -124,19 +126,39 @@ class LeadResource extends Resource
                 // Tables\Columns\TextColumn::make('email')->searchable(),
                 Tables\Columns\TextColumn::make('source')->searchable(),
                 Tables\Columns\TextColumn::make('status')->sortable()->badge(),
-                Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),
-                Tables\Columns\TextColumn::make('updated_at')->dateTime()->sortable(),
+                Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable()->toggleable(),
+                Tables\Columns\TextColumn::make('updated_at')->dateTime()->sortable()->toggleable(),
             ])
             ->defaultSort('created_at', direction: 'desc')
             ->filters([
+
+                // Name Filter
+                Tables\Filters\SelectFilter::make('name')
+                    ->label('Name')
+                    ->options(
+                        Lead::pluck('name', 'name') // key & value same
+                    )
+                    ->searchable(), // dropdown search enabled
+                Tables\Filters\SelectFilter::make('source')
+    ->label('Source')
+    ->options(
+        Lead::query()
+            ->whereNotNull('source')
+            ->distinct()
+            ->pluck('source', 'source')
+    )
+    ->searchable(),
+
+
                 Tables\Filters\SelectFilter::make('status')
+                    ->label('Status')
                     ->options([
                         'new'=>'New',
                         'contacted'=>'Contacted',
                         'converted'=>'Converted',
                         'lost'=>'Lost',
                     ]),
-                     //  Date Range Filter
+                // Date Range Filter
                 Tables\Filters\Filter::make('created_at')
                     ->label('Created Date')
                     ->form([
@@ -149,6 +171,15 @@ class LeadResource extends Resource
                             ->when($data['until'] ?? null, fn ($q, $date) => $q->whereDate('created_at', '<=', $date));
                     })->columnSpan(2)->columns(2)   
             ],layout: FiltersLayout::AboveContent)
+            ->headerActions([
+                FilamentExportHeaderAction::make('export')
+                    ->label('Export Data')
+                    ->fileName('bulk_send_message_recipients')
+                    ->defaultFormat('xlsx')
+                    ->withHiddenColumns() // keeps hidden columns hidden
+                    ->color('success')
+                    ->icon('heroicon-o-arrow-down-tray'),
+                 ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
