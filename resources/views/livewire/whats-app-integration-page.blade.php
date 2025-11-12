@@ -18,10 +18,36 @@
     </div>
 
     <!-- Hero Image -->
-    <div class="mt-12">
-      <img src="storage/images/dashboard-preview.png" class="mx-auto rounded-2xl shadow-lg border" alt="Dashboard Preview">
+    <div class="mt-14">
+      <div class="relative mx-auto max-w-5xl">
+
+        <!-- Clean Ambient Glow -->
+        <div class="absolute inset-0 rounded-[28px] bg-gradient-to-r from-teal-500/10 via-emerald-400/10 to-cyan-400/10 blur-2xl"></div>
+
+        <!-- Main Card -->
+        <div class="relative rounded-[28px] bg-white/95 backdrop-blur-xl shadow-[0_12px_50px_-10px_rgba(0,0,0,0.15)] ring-1 ring-black/5 overflow-hidden transition-all duration-300 hover:shadow-[0_18px_65px_-8px_rgba(0,0,0,0.25)] hover:scale-[1.01]">
+
+          <!-- Browser Bar -->
+          <div class="flex items-center gap-2 px-5 py-3 border-b border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100">
+            <span class="h-3.5 w-3.5 rounded-full bg-[#ff5f56] shadow-inner"></span>
+            <span class="h-3.5 w-3.5 rounded-full bg-[#ffbd2e] shadow-inner"></span>
+            <span class="h-3.5 w-3.5 rounded-full bg-[#27c93f] shadow-inner"></span>
+            <span class="ml-4 text-sm font-medium text-gray-600 tracking-wide">Dashboard Preview</span>
+          </div>
+
+          <!-- Image Preview -->
+          <div class="group relative">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-60 transition-opacity duration-700 pointer-events-none"></div>
+            <img 
+              src="storage/images/dashboard-preview.png"
+              alt="Dashboard Preview"
+              class="w-full h-auto object-cover transition-transform duration-[900ms] ease-[cubic-bezier(.19,1,.22,1)] group-hover:scale-[1.035]"
+            />
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+
 
   <!-- Benefits -->
   <div class="max-w-7xl mx-auto px-6 py-16">
@@ -98,7 +124,7 @@
         <div>
           <div class="text-[#0F7B71] text-4xl font-bold mb-2">2</div>
           <h3 class="font-semibold mb-1">Upload / Sync Contacts</h3>
-          <p class="text-gray-600 text-sm">Import CSV or sync CRM/Shopify/Zendesk.</p>
+          <p class="text-gray-600 text-sm">Import CSV</p>
         </div>
         <div>
           <div class="text-[#0F7B71] text-4xl font-bold mb-2">3</div>
@@ -122,16 +148,16 @@
   </div>
 
   <!-- CTA -->
-<div class="bg-white py-20">
-  <div class="max-w-7xl mx-auto px-6">
-    <div class="bg-[#0F7B71] text-white text-center py-14 rounded-3xl">
-      <h2 class="text-3xl font-bold mb-3">Ready to Transform Your Customer Communication?</h2>
-      <p class="text-sm opacity-90 mb-6">Start free or talk to our product expert.</p>
-      <a href="{{ route('contact') }}" class="px-8 py-3 rounded-xl bg-white text-[#0F7B71] font-semibold hover:bg-gray-100 transition">
-        Book a Demo
-      </a>
+  <div class="bg-white py-20">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="bg-[#0F7B71] text-white text-center py-14 rounded-3xl">
+        <h2 class="text-3xl font-bold mb-3">Ready to Transform Your Customer Communication?</h2>
+        <p class="text-sm opacity-90 mb-6">Start free or talk to our product expert.</p>
+        <a href="{{ route('contact') }}" class="px-8 py-3 rounded-xl bg-white text-[#0F7B71] font-semibold hover:bg-gray-100 transition">
+          Book a Demo
+        </a>
+      </div>
     </div>
   </div>
-</div>
 
 </section>

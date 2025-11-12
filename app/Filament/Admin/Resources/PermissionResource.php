@@ -79,6 +79,20 @@ class PermissionResource extends Resource
             'edit' => Pages\EditPermission::route('/{record}/edit'),
         ];
     }
+
+    // public static function canViewAny(): bool
+    // {
+    //     return auth()->permission()->can('view_any_permission');
+    // }
+    // public static function canEdit($record): bool
+    // {
+    //     return auth()->permission()->can('update_permission');
+    // }
+
+    // public static function canDelete($record): bool
+    // {
+    //     return auth()->permission()->can('delete_permission');
+    // }
     
 
 }

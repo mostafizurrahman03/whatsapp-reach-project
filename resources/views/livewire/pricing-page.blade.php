@@ -61,8 +61,34 @@
                             <span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#D6F8E8] text-[#0F7B71]">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.25 7.25a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414l2.293 2.293 6.543-6.543a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                             </span>
-                            Bulk send
+                            Bulk message
                         </li>
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#D6F8E8] text-[#0F7B71]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.25 7.25a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414l2.293 2.293 6.543-6.543a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                            </span>
+                             messages limit (unlimited)
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#D6F8E8] text-[#0F7B71]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.25 7.25a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414l2.293 2.293 6.543-6.543a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                            </span>
+                              contact limit (4000)
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#D6F8E8] text-[#0F7B71]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.25 7.25a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414l2.293 2.293 6.543-6.543a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                            </span>
+                             device limit (unlimited)
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#D6F8E8] text-[#0F7B71]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.25 7.25a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414l2.293 2.293 6.543-6.543a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                            </span>
+                             template limit (unlimited)
+                        </li>
+                     
+                        
                     </ul>
                     <a href="{{ route('filament.user.auth.register') }}" class="mt-auto inline-flex items-center justify-center rounded-lg border border-[#0F7B71] text-[#0F7B71] bg-white px-5 py-2.5 font-semibold shadow hover:bg-[#0F7B71] hover:text-white transition">Get Started</a>
                 </div>
@@ -99,6 +125,30 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.25 7.25a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414l2.293 2.293 6.543-6.543a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                             </span>
                             Templates & scheduling
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#D6F8E8] text-[#0F7B71]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.25 7.25a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414l2.293 2.293 6.543-6.543a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                            </span>
+                             messages limit (unlimited)
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#D6F8E8] text-[#0F7B71]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.25 7.25a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414l2.293 2.293 6.543-6.543a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                            </span>
+                              contact limit (4000)
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#D6F8E8] text-[#0F7B71]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.25 7.25a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414l2.293 2.293 6.543-6.543a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                            </span>
+                             device limit (unlimited)
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#D6F8E8] text-[#0F7B71]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.25 7.25a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414l2.293 2.293 6.543-6.543a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                            </span>
+                             template limit (unlimited)
                         </li>
                     </ul>
                     <a href="{{ route('filament.user.auth.register') }}" class="mt-auto inline-flex items-center justify-center rounded-lg border border-[#0F7B71] text-[#0F7B71] bg-white px-5 py-2.5 font-semibold shadow hover:bg-[#0F7B71] hover:text-white transition">Get Started</a>
@@ -137,6 +187,30 @@
                             </span>
                             Advanced automation
                         </li>
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#D6F8E8] text-[#0F7B71]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.25 7.25a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414l2.293 2.293 6.543-6.543a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                            </span>
+                             messages limit (unlimited)
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#D6F8E8] text-[#0F7B71]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.25 7.25a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414l2.293 2.293 6.543-6.543a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                            </span>
+                              contact limit (4000)
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#D6F8E8] text-[#0F7B71]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.25 7.25a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414l2.293 2.293 6.543-6.543a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                            </span>
+                             device limit (unlimited)
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#D6F8E8] text-[#0F7B71]">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-7.25 7.25a1 1 0 01-1.414 0l-3-3a1 1 0 011.414-1.414l2.293 2.293 6.543-6.543a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                            </span>
+                             template limit (unlimited)
+                        </li>
                     </ul>
                     <a href="{{ route('filament.user.auth.register') }}" class="mt-auto inline-flex items-center justify-center rounded-lg border border-[#0F7B71] text-[#0F7B71] bg-white px-5 py-2.5 font-semibold shadow hover:bg-[#0F7B71] hover:text-white transition">Get Started</a>
                 </div>
@@ -144,3 +218,4 @@
         </div>
     </section>
 </div>
+

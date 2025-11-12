@@ -89,6 +89,8 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -116,6 +118,20 @@ class UserResource extends Resource
     {
         return auth()->user()->can('view_any_user');
     }
+    public static function canEdit($record): bool
+    {
+        return auth()->user()->can('update_user');
+    }
+
+    public static function canDelete($record): bool
+    {
+        return auth()->user()->can('delete_user');
+    }
+
+
+
+
+    
 
     
 
