@@ -27,9 +27,9 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-medium text-gray-900">Email</h3>
-                            <p class="text-gray-600">support@example.com</p>
+                            <p class="text-gray-600">{{ $contact['email'] }}</p>
                         </div>
-                    </div>
+                    </div>                                                                                      
 
                     <!-- Phone -->
                     <div class="flex items-center space-x-4">
@@ -42,7 +42,7 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-medium text-gray-900">Phone</h3>
-                            <p class="text-gray-600">+1 (555) 123-4567</p>
+                            <p class="text-gray-600">{{ $contact['phone'] }}</p>
                         </div>
                     </div>
 
@@ -58,7 +58,7 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-medium text-gray-900">Address</h3>
-                            <p class="text-gray-600">123 Business St, Suite 100<br>City, State 12345</p>
+                            <p class="text-gray-600">{{ $contact['address'] }}</p>
                         </div>
                     </div>
 
@@ -73,7 +73,7 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-medium text-gray-900">Business Hours</h3>
-                            <p class="text-gray-600">Mon - Fri: 9:00 AM - 6:00 PM<br>Sat - Sun: 10:00 AM - 4:00 PM</p>
+                            <p class="text-gray-600">{!! nl2br(str_replace(',', "\n", $contact['business_hours'])) !!}</p>
                         </div>
                     </div>
                 </div>

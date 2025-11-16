@@ -22,6 +22,7 @@ use App\Http\Livewire\PricingPage;
 use App\Http\Livewire\ContactPage;
 use App\Http\Livewire\WhatsAppIntegrationPage;
 use App\Http\Controllers\ContactInformationController;
+use App\Http\Controllers\ClientMessageController;
 
 Route::get('/user', function () {
     return redirect()->route('filament.user.auth.login');
@@ -40,3 +41,4 @@ Route::get('/whats-app-integration', WhatsAppIntegrationPage::class)->name('what
     
 // Information for the website
 Route::get('/contact-information', [ContactInformationController::class, 'index'])->name('contact-information');
+Route::post('/client-message', [ClientMessageController::class, 'submit'])->name('client-message');
