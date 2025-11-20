@@ -16,11 +16,11 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Livewire\HomePage;
-use App\Http\Livewire\FeaturesPage;
-use App\Http\Livewire\PricingPage;
-use App\Http\Livewire\ContactPage;
-use App\Http\Livewire\WhatsAppIntegrationPage;
+use App\Livewire\HomePage;
+use App\Livewire\FeaturesPage;
+use App\Livewire\PricingPage;
+use App\Livewire\ContactPage;
+use App\Livewire\WhatsAppIntegrationPage;
 use App\Http\Controllers\ContactInformationController;
 use App\Http\Controllers\ClientMessageController;
 
@@ -40,5 +40,8 @@ Route::get('/contact', ContactPage::class)->name('contact');
 Route::get('/whats-app-integration', WhatsAppIntegrationPage::class)->name('whats-app-integration');
     
 // Information for the website
-Route::get('/contact-information', [ContactInformationController::class, 'index'])->name('contact-information');
-Route::post('/client-message', [ClientMessageController::class, 'submit'])->name('client-message');
+// Route::get('/contact-information', [ContactInformationController::class, 'index'])->name('contact-information');
+// Route::post('/client-message', [ClientMessageController::class, 'submit'])->name('client-message');
+
+Route::get('/contact', ContactPage::class)->name('contact');
+

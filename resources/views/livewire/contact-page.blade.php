@@ -82,17 +82,17 @@
             <!-- Contact Form -->
             <div class="bg-white rounded-2xl shadow-xl p-8">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h2>
-                
+                            
                 <form wire:submit.prevent="submitForm" class="space-y-6">
+
                     <!-- Name -->
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
                         <input type="text" 
-                               id="name" 
-                               wire:model="name"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0F7B71] focus:border-[#0F7B71] transition-colors"
-                               placeholder="Your full name"
-                               required>
+                            id="name" 
+                            wire:model="name"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0F7B71] focus:border-[#0F7B71]"
+                            placeholder="Your full name">
                         @error('name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
 
@@ -100,11 +100,10 @@
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
                         <input type="email" 
-                               id="email" 
-                               wire:model="email"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0F7B71] focus:border-[#0F7B71] transition-colors"
-                               placeholder="your.email@example.com"
-                               required>
+                            id="email" 
+                            wire:model="email"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0F7B71] focus:border-[#0F7B71]"
+                            placeholder="your.email@example.com">
                         @error('email') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
 
@@ -112,11 +111,10 @@
                     <div>
                         <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">Subject</label>
                         <input type="text" 
-                               id="subject" 
-                               wire:model="subject"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0F7B71] focus:border-[#0F7B71] transition-colors"
-                               placeholder="What is this about?"
-                               required>
+                            id="subject" 
+                            wire:model="subject"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0F7B71] focus:border-[#0F7B71]"
+                            placeholder="What is this about?">
                         @error('subject') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
 
@@ -124,33 +122,54 @@
                     <div>
                         <label for="message" class="block text-sm font-medium text-gray-700 mb-2">Message</label>
                         <textarea id="message" 
-                                  wire:model="message"
-                                  rows="5"
-                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0F7B71] focus:border-[#0F7B71] transition-colors resize-none"
-                                  placeholder="Tell us more about your inquiry..."
-                                  required></textarea>
+                            wire:model="message"
+                            rows="5"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0F7B71] focus:border-[#0F7B71] resize-none"
+                            placeholder="Tell us more about your inquiry..."></textarea>
                         @error('message') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
 
                     <!-- Submit Button -->
                     <div>
-                        <button type="submit" 
-                                class="w-full bg-[#0F7B71] hover:bg-[#0F7B71]/90 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
-                            <span>Send Message</span>
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                            </svg>
+                        <button type="submit"
+                            class="w-full bg-[#0F7B71] hover:bg-[#0F7B71]/90 text-white font-medium py-3 px-6 rounded-lg transition flex items-center justify-center space-x-2"
+                            wire:loading.attr="disabled">
+
+                            <span wire:loading.remove>Send Message</span>
+
+                            <!-- Loading Spinner -->
+                            <span wire:loading class="flex items-center space-x-2">
+                                <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10" stroke-width="4" class="opacity-25"></circle>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" 
+                                        d="M4 12a8 8 0 018-8"></path>
+                                </svg>
+                                <span>Submitting...</span>
+                            </span>
+
                         </button>
                     </div>
                 </form>
 
                 <!-- Success Message -->
                 @if (session()->has('message'))
-                    <div class="mt-4 p-4 bg-[#0F7B71]/10 border border-[#0F7B71]/40 text-[#0F7B71] rounded-lg">
+                    <div class="mt-4 p-4 bg-green-100 border border-green-300 text-green-700 rounded-lg animate-fade-in">
                         {{ session('message') }}
                     </div>
                 @endif
             </div>
+
+            <style>
+            @keyframes fade-in {
+                from { opacity: 0; transform: translateY(10px); }
+                to   { opacity: 1; transform: translateY(0); }
+            }
+
+            .animate-fade-in {
+                animation: fade-in 0.4s ease-out;
+            }
+            </style>
+
         </div>
 
         <!-- Additional CTA Section -->

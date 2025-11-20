@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class ClientMessage extends Model
 {
     use HasFactory;
+    protected $table = 'client_messages';
+    
+
 
     protected $fillable = [
         'name',
