@@ -23,6 +23,7 @@ use App\Livewire\ContactPage;
 use App\Livewire\WhatsAppIntegrationPage;
 use App\Http\Controllers\ContactInformationController;
 use App\Http\Controllers\ClientMessageController;
+use App\Http\Controllers\FeatureController;
 
 Route::get('/user', function () {
     return redirect()->route('filament.user.auth.login');
@@ -44,4 +45,5 @@ Route::get('/whats-app-integration', WhatsAppIntegrationPage::class)->name('what
 // Route::post('/client-message', [ClientMessageController::class, 'submit'])->name('client-message');
 
 Route::get('/contact', ContactPage::class)->name('contact');
+// Route::get('/features', [FeatureController::class, 'index'])->name('features');
 

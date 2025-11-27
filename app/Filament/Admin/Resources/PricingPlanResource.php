@@ -15,6 +15,11 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Infolists\Infolist;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\RepeatableEntry;
+
 
 class PricingPlanResource extends Resource
 {
@@ -87,8 +92,32 @@ class PricingPlanResource extends Resource
             ->columns([
                 TextColumn::make('name')->label('Plan Name')->sortable()->searchable(),
                 TextColumn::make('slug')->label('Slug')->sortable(),
+                TextColumn::make('description')
+                    ->label('Description')
+                    ->limit(10)
+                    ->tooltip(fn ($state) => $state)
+                    ->sortable(),
                 TextColumn::make('monthly_price')->label('Monthly Price')->money('bdt'),
                 TextColumn::make('yearly_price')->label('Yearly Price')->money('bdt'),
+
+
+  
+                TextColumn::make('features')
+                    ->label('Features')
+                    ->limit(10)
+                    ->tooltip(fn ($record) =>
+                        collect($record->features)->pluck('feature')->implode(', '))
+                    ->formatStateUsing(function ($state, $record) {
+                        // Directly take data from model cast (always array)
+                        $features = $record->features;
+
+                        if (!$features || !is_array($features)) {
+                            return '-';
+                        }
+
+                        return implode(', ', array_column($features, 'feature'));
+                    }),
+
 
                 IconColumn::make('is_popular')
                     ->label('Popular')
@@ -102,21 +131,6 @@ class PricingPlanResource extends Resource
                     ->label('Sort Order')
                     ->sortable(),
 
-                TextColumn::make('features')
-                    ->label('Features')
-                    ->formatStateUsing(function ($state) {
-                        if (!is_array($state)) {
-                            $decoded = json_decode($state, true);
-
-                            if (!is_array($decoded)) {
-                                return '-';
-                            }
-
-                            $state = $decoded;
-                        }
-
-                        return implode(', ', array_column($state, 'feature'));
-                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -127,6 +141,64 @@ class PricingPlanResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
+
+    
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+
+                // Plan Information Section
+                Section::make('Plan Information')
+                    ->schema([
+                        TextEntry::make('name')
+                            ->label('Plan Name')
+                            ->color('primary'),
+
+                        TextEntry::make('slug')
+                            ->label('Slug')
+                            ->color('secondary'),
+
+                        TextEntry::make('monthly_price')
+                            ->label('Monthly Price')
+                            ->color('success'),
+
+                        TextEntry::make('yearly_price')
+                            ->label('Yearly Price')
+                            ->color('success'),
+
+                        TextEntry::make('description')
+                            ->label('Description')
+                            ->color('gray'),
+
+                        TextEntry::make('is_popular')
+                            ->label('Popular')
+                            ->color(fn($state) => $state ? 'success' : 'danger')
+                            ->formatStateUsing(fn($state) => $state ? 'Yes' : 'No'),
+
+                        TextEntry::make('status')
+                            ->label('Active')
+                            ->color(fn($state) => $state ? 'success' : 'danger')
+                            ->formatStateUsing(fn($state) => $state ? 'Active' : 'Inactive'),
+                    ])
+                    ->columns(2),
+
+                // Features Section
+                Section::make('Features')
+                    ->schema([
+                        RepeatableEntry::make('features')
+                            ->schema([
+                                TextEntry::make('feature')
+                                    ->label('Feature')
+                                    ->color('primary'),
+                            ])
+                            ->columnSpanFull(),
+                    ])
+                    ->columns(1),
+
+            ]);
+    }
+
 
     public static function getRelations(): array
     {
