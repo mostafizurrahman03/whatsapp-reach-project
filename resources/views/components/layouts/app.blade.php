@@ -18,8 +18,8 @@
         <div class="flex h-16 items-center justify-between">
             <!-- Brand -->
             <a href="{{ route('home') }}" class="flex items-center gap-2 group">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[#0F7B71] text-white font-bold">WR</span>
-                <span class="text-2xl font-extrabold tracking-tight text-gray-900 group-hover:text-[#0F7B71] transition-colors">Whats-Reach</span>
+                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-[#0F7B71] text-white font-bold">RW</span>
+                <span class="text-2xl font-extrabold tracking-tight text-gray-900 group-hover:text-[#0F7B71] transition-colors">ReachWave</span>
             </a>
 
             <!-- Desktop Nav -->

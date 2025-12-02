@@ -16,4 +16,13 @@ class EditCampaign extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+    
+    /**
+     * Redirect to list page after create.
+     */
+    protected function getRedirectUrl(): string
+    {
+        // Redirect to the CampaignResource index page
+        return $this->getResource()::getUrl('index');
+    }
 }

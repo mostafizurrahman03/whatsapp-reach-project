@@ -23,9 +23,11 @@ class ClientMessageResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Website Settings';
     protected static ?string $navigationLabel = 'Client Message';
+
+    
     public static function getNavigationBadge(): ?string
     {
-        return (string) \App\Models\ClientMessage::count();
+        return (string) ClientMessage::count();
     }
     // public static function getNavigationBadgeColor(): ?string
     // {
@@ -177,3 +179,4 @@ class ClientMessageResource extends Resource
         ];
     }
 }
+

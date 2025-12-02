@@ -20,4 +20,10 @@ class CreateCampaign extends CreateRecord
 
         return Campaign::create($data);
     }
+
+    protected function getRedirectUrl(): string
+    {
+        
+        return $this->getResource()::getUrl('index');
+    }
 }

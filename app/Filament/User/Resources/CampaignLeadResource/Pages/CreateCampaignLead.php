@@ -22,4 +22,10 @@ class CreateCampaignLead extends CreateRecord
 
         return CampaignLead::create($data);
     }
+
+    protected function getRedirectUrl(): string
+    {
+        
+        return $this->getResource()::getUrl('index');
+    }
 }

@@ -43,4 +43,11 @@ class EditProfile extends EditRecord
 
         return $data;
     }
+
+    protected function getRedirectUrl(): string
+    {
+        // Save করার পরও Profile View page এ redirect
+        return $this->getResource()::getUrl('view', ['record' => $this->record->id]);
+    }
 }
+
