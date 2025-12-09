@@ -3,42 +3,47 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class ClientConfiguration extends Model
 {
-    // Table name (optional default, but best practice)
     protected $table = 'client_configurations';
 
-    // Mass assignable fields
     protected $fillable = [
-        'client_name',
-        'api_key',
-        'secret_key',
+        'user_id',
+        'client_api_key',
+        'client_secret_key',
+        'balance',
+        'rate_per_sms',
         'tps',
         'service_routing',
+        'allowed_ips',
+        'is_active',
     ];
 
-    // Casts for correct data types
     protected $casts = [
+        'balance' => 'decimal:2',
+        'rate_per_sms' => 'decimal:2',
         'tps' => 'integer',
-        'service_routing' => 'array', // {"sms":"reve","whatsapp":"meta"}
+        'service_routing' => 'array',
+        'allowed_ips' => 'array',
+        'is_active' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
 
-    /*
-     |--------------------------------------------------------------------------
-     | Relationships (future-ready)
-     |--------------------------------------------------------------------------
-     |
-     | You may want to track which client is using which services.
-     | For now, skipped because no direct table relation.
-     |
-     */
+    /** RELATIONSHIPS **/
 
-    // Example (if needed in future)
-    // public function usageLogs()
-    // {
-    //     return $this->hasMany(ClientUsageLog::class);
-    // }
+    // Each client config belongs to one user
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /*
+     * IMPORTANT NOTE:
+     * No "service()" relationship exists in your migration.
+     * There is NO "service_id" column in your DB.
+     * So service() relationship removed.
+     */
 }

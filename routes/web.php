@@ -24,6 +24,8 @@ use App\Livewire\WhatsAppIntegrationPage;
 use App\Http\Controllers\ContactInformationController;
 use App\Http\Controllers\ClientMessageController;
 use App\Http\Controllers\FeatureController;
+use App\Http\Controllers\Api\SmsController;
+
 
 Route::get('/user', function () {
     return redirect()->route('filament.user.auth.login');
@@ -31,6 +33,17 @@ Route::get('/user', function () {
 Route::get('/admin', function () {
     return redirect()->route('filament.admin.auth.login');
 });
+
+
+// Route::middleware(['api','api.auth'])->post('/send-sms', [SmsController::class,'send']);
+
+
+
+Route::middleware(['api', 'api.auth'])->group(function () {
+    Route::post('/sms/single', [SmsController::class, 'sendSingle']);
+    Route::post('/sms/bulk', [SmsController::class, 'sendBulk']);
+});
+
 
 
 // Livewire routes

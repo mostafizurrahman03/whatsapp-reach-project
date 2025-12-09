@@ -15,11 +15,12 @@ return new class extends Migration
             $table->id();
             $table->foreignId('service_id')->constrained('services')->cascadeOnDelete();
             $table->string('vendor_name');
+            $table->string('base_url');
             $table->string('api_key')->nullable();
             $table->string('secret_key')->nullable();
-            $table->string('base_url')->nullable();
             $table->integer('tps')->default(10);
-            $table->json('extra_config')->nullable();
+            $table->json('extra_config')->nullable(); // extra settings
+            $table->json('ip_whitelist')->nullable(); // ["103.10.12.45"]
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

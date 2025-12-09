@@ -13,21 +13,20 @@ class VendorConfiguration extends Model
     protected $fillable = [
         'service_id',
         'vendor_name',
+        'base_url',
         'api_key',
         'secret_key',
-        'base_url',
         'tps',
         'extra_config',
+        'ip_whitelist',
         'is_active',
     ];
 
     // Casts for correct data types
     protected $casts = [
         'extra_config' => 'array',
+        'ip_whitelist' => 'array',
         'is_active' => 'boolean',
-        'tps' => 'integer',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
     ];
 
     // Each vendor is linked to a service (SMS/WhatsApp/Voice/etc)

@@ -4,16 +4,14 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\ClientConfigurationResource\Pages;
 use App\Models\ClientConfiguration;
+use App\Models\Service;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use FilamentJsonEditor\Forms\Components\JsonEditor;
-use Filament\Infolists\Infolist;
-use Filament\Infolists\Components\TextEntry;
-use Filament\Infolists\Components\Section;
-use Filament\Forms\Components\KeyValue;
+
 
 class ClientConfigurationResource extends Resource
 {
@@ -32,44 +30,77 @@ class ClientConfigurationResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('Client Info')
-                    ->schema([
-                        Forms\Components\TextInput::make('client_name')
-                            ->label('Client Name')
-                            ->required()
-                            ->maxLength(255),
 
-                        Forms\Components\TextInput::make('api_key')
-                            ->label('API Key')
+                Forms\Components\Section::make('Client Credentials')
+                    ->schema([
+
+                        Forms\Components\Select::make('user_id')
+                            ->label('Linked User (Optional)')
+                            ->relationship('user', 'name')
+                            ->preload() 
+                            ->searchable()
+                            ->nullable(),
+
+                        Forms\Components\TextInput::make('client_api_key')
+                            ->label('Client API Key')
                             ->required()
                             ->unique(ignoreRecord: true)
                             ->maxLength(255),
 
-                        Forms\Components\TextInput::make('secret_key')
-                            ->label('Secret Key')
+                        Forms\Components\TextInput::make('client_secret_key')
+                            ->label('Client Secret Key')
                             ->required()
                             ->password()
                             ->maxLength(255),
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('Technical Settings')
+                Forms\Components\Section::make('Billing & Limits')
                     ->schema([
+
+                        Forms\Components\TextInput::make('balance')
+                            ->label('Balance')
+                            ->numeric()
+                            ->default(0),
+
+                        Forms\Components\TextInput::make('rate_per_sms')
+                            ->label('Rate Per SMS')
+                            ->numeric()
+                            ->default(0.00),
+
                         Forms\Components\TextInput::make('tps')
-                            ->label('Max TPS')
+                            ->label('TPS Limit')
                             ->numeric()
                             ->default(5)
                             ->minValue(1),
+
+                    ])
+                    ->columns(3),
+
+                Forms\Components\Section::make('Routing & Security')
+                    ->schema([
+
                         Forms\Components\KeyValue::make('service_routing')
-                            ->label('Service Routing')
+                            ->label('Service Routing (service => vendor)')
+                            ->keyLabel('Service (sms / whatsapp / voice)')
+                            ->valueLabel('Vendor Name')
                             ->addButtonLabel('Add Route')
-                            ->keyLabel('Service Type')
-                            ->valueLabel('Vendor')
-                            ->reactive()
                             ->nullable(),
+
+                        Forms\Components\KeyValue::make('allowed_ips')
+                            ->label('Allowed IPs')
+                            ->keyLabel('Index')
+                            ->valueLabel('IP Address')
+                            ->addButtonLabel('Add IP')
+                            ->nullable(),
+
+                        Forms\Components\Toggle::make('is_active')
+                            ->label('Active')
+                            ->default(true),
 
                     ])
                     ->columns(2),
+
             ]);
     }
 
@@ -77,28 +108,33 @@ class ClientConfigurationResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('client_name')
-                    ->label('Client')
+
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('User')
                     ->sortable()
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('api_key')
+                Tables\Columns\TextColumn::make('client_api_key')
                     ->label('API Key')
-                    ->searchable()
-                    ->copyable(),
+                    ->copyable()
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('balance')
+                    ->label('Balance')
+                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('tps')
                     ->label('TPS')
                     ->sortable(),
 
+                Tables\Columns\IconColumn::make('is_active')
+                    ->label('Status')
+                    ->boolean(),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created')
                     ->dateTime('d M Y h:i A')
                     ->sortable(),
-            ])
-
-            ->filters([
-                //
             ])
 
             ->actions([
@@ -116,9 +152,7 @@ class ClientConfigurationResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
