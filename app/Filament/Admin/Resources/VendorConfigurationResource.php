@@ -37,16 +37,36 @@ class VendorConfigurationResource extends Resource
                     ->required()
                     ->maxLength(255),
 
-                Forms\Components\TextInput::make('api_key')
+                Forms\Components\TextInput::make('send_sms_url')
+                    ->label('Send SMS Endpoint')
+                    ->placeholder('/v3/send-sms')
                     ->maxLength(255),
 
-                Forms\Components\TextInput::make('secret_key')
-                    ->maxLength(255),
+                Forms\Components\TextInput::make('api_key')->maxLength(255),
+                Forms\Components\TextInput::make('secret_key')->maxLength(255),
 
                 Forms\Components\TextInput::make('tps')
                     ->numeric()
                     ->default(10)
                     ->required(),
+
+                //  Add Sender IDs (JSON)
+                // Forms\Components\Textarea::make('sender_ids')
+                //     ->label('Sender IDs (JSON Array)')
+                //     ->placeholder('["8809610980262", "WEHUB1"]')
+                //     ->columnSpanFull(),
+
+                Forms\Components\TextInput::make('sender_ids')
+                    ->label('Sender IDs (comma separated)')
+                    ->helperText('Example: 8809610980262, WEHUB, BRANDX')
+                    ->afterStateHydrated(function ($component, $state) {
+                        $component->state(is_array($state) ? implode(',', $state) : $state);
+                    })
+                    ->dehydrateStateUsing(function ($state) {
+                        return array_map('trim', explode(',', $state));
+                    })
+                    ->columnSpanFull(),
+
 
                 Forms\Components\Textarea::make('extra_config')
                     ->label("Extra Config (JSON)")
@@ -61,6 +81,7 @@ class VendorConfigurationResource extends Resource
                     ->label('Active'),
             ]);
     }
+
 
     public static function table(Table $table): Table
     {

@@ -11,7 +11,9 @@ class VendorConfiguration extends Model
 
     // Mass assignable fields
     protected $fillable = [
+        
         'service_id',
+        'sender_ids',
         'vendor_name',
         'base_url',
         'api_key',
@@ -24,9 +26,12 @@ class VendorConfiguration extends Model
 
     // Casts for correct data types
     protected $casts = [
+        'sender_ids'   => 'array',
         'extra_config' => 'array',
         'ip_whitelist' => 'array',
         'is_active' => 'boolean',
+        'tps'       => 'integer',
+
     ];
 
     // Each vendor is linked to a service (SMS/WhatsApp/Voice/etc)

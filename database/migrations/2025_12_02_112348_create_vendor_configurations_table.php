@@ -18,7 +18,9 @@ return new class extends Migration
             $table->string('base_url');
             $table->string('api_key')->nullable();
             $table->string('secret_key')->nullable();
-            $table->integer('tps')->default(10);
+            $table->json('sender_ids')->nullable(); // multiple sender IDs(like 8809610980262)
+            $table->string('send_sms_url')->nullable();   // Example: /v3/send-sms
+            $table->unsignedInteger('tps')->default(10);
             $table->json('extra_config')->nullable(); // extra settings
             $table->json('ip_whitelist')->nullable(); // ["103.10.12.45"]
             $table->boolean('is_active')->default(true);

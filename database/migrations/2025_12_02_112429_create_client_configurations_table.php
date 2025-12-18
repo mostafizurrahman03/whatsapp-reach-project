@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('client_secret_key');
             $table->decimal('balance', 14, 2)->default(0);
             $table->decimal('rate_per_sms', 8, 2)->default(0.00);
+            $table->json('sender_ids')->nullable(); // multiple sender IDs(like 8809610980262)
             $table->integer('tps')->default(5);
             $table->json('service_routing')->nullable(); // {"sms":"reve","whatsapp":"meta"}
             $table->json('allowed_ips')->nullable(); // ["103.10.12.45"]

@@ -52,6 +52,16 @@ class ClientConfigurationResource extends Resource
                             ->required()
                             ->password()
                             ->maxLength(255),
+                        Forms\Components\TextInput::make('sender_ids')
+                            ->label('Sender IDs (comma separated)')
+                            ->helperText('Example: 8809610980262, WEHUB, BRANDX')
+                            ->afterStateHydrated(function ($component, $state) {
+                                $component->state(is_array($state) ? implode(',', $state) : $state);
+                            })
+                            ->dehydrateStateUsing(function ($state) {
+                                return array_map('trim', explode(',', $state));
+                            })
+                            ->columnSpanFull(),
                     ])
                     ->columns(2),
 
@@ -117,6 +127,11 @@ class ClientConfigurationResource extends Resource
                 Tables\Columns\TextColumn::make('client_api_key')
                     ->label('API Key')
                     ->copyable()
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('sender_ids')
+                    ->label('Sender IDs')
+                    ->formatStateUsing(fn($state) => is_array($state) ? implode(', ', $state) : $state)
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('balance')

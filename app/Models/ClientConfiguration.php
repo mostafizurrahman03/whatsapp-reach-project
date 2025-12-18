@@ -11,6 +11,7 @@ class ClientConfiguration extends Model
 
     protected $fillable = [
         'user_id',
+        'sender_ids',
         'client_api_key',
         'client_secret_key',
         'balance',
@@ -19,6 +20,7 @@ class ClientConfiguration extends Model
         'service_routing',
         'allowed_ips',
         'is_active',
+
     ];
 
     protected $casts = [
@@ -30,6 +32,7 @@ class ClientConfiguration extends Model
         'is_active' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'sender_ids',
     ];
 
     /** RELATIONSHIPS **/

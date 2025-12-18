@@ -35,5 +35,14 @@ class Service extends Model
     {
         return $this->hasMany(ClientConfiguration::class);
     }
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
+    }
+    public function smsBulkMessages()
+    {
+        return $this->hasMany(SmsBulkMessage::class);
+    }
+
 }
 
