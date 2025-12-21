@@ -26,9 +26,13 @@ class PricingPlanController extends Controller
 {
     public function index()
     {
-        $plans = PricingPlan::all(); // বা order করতে চাইলে ->orderBy('sort_order')->get();
+        $plans = PricingPlan::all(); // if I want making order ->orderBy('sort_order')->get();
         return view('pricing.index', compact('plans'));
     }
 }
+
+
+
+
 
 

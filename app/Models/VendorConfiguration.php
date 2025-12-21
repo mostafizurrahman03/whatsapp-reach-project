@@ -14,6 +14,7 @@ class VendorConfiguration extends Model
         
         'service_id',
         'sender_ids',
+        'send_sms_url',
         'vendor_name',
         'base_url',
         'api_key',

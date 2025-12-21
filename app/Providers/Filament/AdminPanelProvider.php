@@ -30,7 +30,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->brandName('WhatsReach')
+            ->brandName('ReachWave')
             ->profile() 
             ->colors([
                 'primary' => Color::Green,

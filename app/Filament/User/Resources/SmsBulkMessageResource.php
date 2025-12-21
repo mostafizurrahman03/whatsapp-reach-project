@@ -210,3 +210,4 @@ class SmsBulkMessageResource extends Resource
         ];
     }
 }
+
