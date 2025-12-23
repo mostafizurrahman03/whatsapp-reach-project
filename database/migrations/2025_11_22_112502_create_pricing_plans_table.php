@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
+            $table->decimal('package_price', 10, 2)->default(0);
             $table->decimal('monthly_price', 10, 2)->default(0);
             $table->decimal('yearly_price', 10, 2)->default(0);
             $table->text('description')->nullable();
