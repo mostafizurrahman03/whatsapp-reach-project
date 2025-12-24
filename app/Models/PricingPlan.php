@@ -11,6 +11,7 @@ class PricingPlan extends Model
     protected $fillable = [
         'name',
         'slug',
+        'package_price',
         'monthly_price',
         'yearly_price',
         'description',
@@ -26,5 +27,6 @@ class PricingPlan extends Model
         'features' => 'array', // JSON → array
         'monthly_price' => 'decimal:2',
         'yearly_price' => 'decimal:2',
+        'package_price' => 'decimal:2',
     ];
 }

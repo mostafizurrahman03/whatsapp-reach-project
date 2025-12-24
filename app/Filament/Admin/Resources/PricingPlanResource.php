@@ -47,6 +47,10 @@ class PricingPlanResource extends Resource
                         ->required()
                         ->unique(ignoreRecord: true),
 
+                    TextInput::make('package_price')
+                        ->label('Package Price')
+                        ->numeric()
+                        ->required(),  
                     TextInput::make('monthly_price')
                         ->label('Monthly Price')
                         ->numeric()
@@ -97,6 +101,7 @@ class PricingPlanResource extends Resource
                     ->limit(10)
                     ->tooltip(fn ($state) => $state)
                     ->sortable(),
+                TextColumn::make('package_price')->label('Package Price')->money('bdt'),
                 TextColumn::make('monthly_price')->label('Monthly Price')->money('bdt'),
                 TextColumn::make('yearly_price')->label('Yearly Price')->money('bdt'),
 
@@ -157,6 +162,10 @@ class PricingPlanResource extends Resource
 
                         TextEntry::make('slug')
                             ->label('Slug')
+                            ->color('secondary'),
+
+                        TextEntry::make('package_price')
+                            ->label('Package Price')
                             ->color('secondary'),
 
                         TextEntry::make('monthly_price')
