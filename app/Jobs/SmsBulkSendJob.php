@@ -67,89 +67,174 @@
 
 
 
+// namespace App\Jobs;
+
+// use App\Models\SmsBulkMessage;
+// use App\Services\SmsSenderService;
+// use Illuminate\Bus\Queueable;
+// use Illuminate\Contracts\Queue\ShouldQueue;
+// use Illuminate\Foundation\Bus\Dispatchable;
+// use Illuminate\Queue\InteractsWithQueue;
+// use Illuminate\Queue\SerializesModels;
+
+// class SmsBulkSendJob implements ShouldQueue
+// {
+//     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+//     public int $timeout = 120;
+
+//     public function __construct(
+//         public SmsBulkMessage $message
+//     ) {}
+
+//     public function handle(): void
+//     {
+//         $vendor = $this->message->vendorConfiguration;
+
+//         $numbers = collect($this->message->recipients)
+//             ->pluck('number')
+//             ->filter()
+//             ->values();
+
+//         $service = new SmsSenderService($vendor);
+
+//         $success = 0;
+//         $failed  = 0;
+//         $logs    = [];
+
+//         collect($numbers)->chunk($vendor->tps)->each(function ($chunk) use (
+//             &$success,
+//             &$failed,
+//             &$logs,
+//             $service
+//         ) {
+//             foreach ($chunk as $number) {
+//                 try {
+//                     $sent = $service->send(
+//                         $this->message->sender_id,
+//                         $number,
+//                         $this->message->content
+//                     );
+
+//                     $sent ? $success++ : $failed++;
+
+//                     $logs[] = [
+//                         'number' => $number,
+//                         'status' => $sent ? 'sent' : 'failed',
+//                     ];
+//                 } catch (\Throwable $e) {
+//                     $failed++;
+//                     $logs[] = [
+//                         'number' => $number,
+//                         'status' => 'error',
+//                         'error'  => $e->getMessage(),
+//                     ];
+//                 }
+//             }
+
+//             sleep(1); // TPS control
+//         });
+
+//         $this->message->update([
+//             'success_count' => $success,
+//             'failed_count'  => $failed,
+//             'status'        => $failed > 0 ? 'partial' : 'sent',
+//             'sent_at'       => now(),
+//             'response'      => $logs,
+//         ]);
+//     }
+
+//     public function failed(\Throwable $e): void
+//     {
+//         $this->message->update([
+//             'status'   => 'failed',
+//             'response' => ['error' => $e->getMessage()],
+//         ]);
+//     }
+// }
+
+
+
+
+
+
+
+
+
+
 namespace App\Jobs;
 
 use App\Models\SmsBulkMessage;
-use App\Services\SmsSenderService;
+use App\Services\Sms\SmsSendService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class SmsBulkSendJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $timeout = 120;
-
+    public $tries = 3;
+    public $timeout = 600; // 10 minutes
+    
     public function __construct(
         public SmsBulkMessage $message
     ) {}
 
-    public function handle(): void
+    public function handle(SmsSendService $smsService): void
     {
-        $vendor = $this->message->vendorConfiguration;
-
-        $numbers = collect($this->message->recipients)
-            ->pluck('number')
-            ->filter()
-            ->values();
-
-        $service = new SmsSenderService($vendor);
-
-        $success = 0;
-        $failed  = 0;
-        $logs    = [];
-
-        collect($numbers)->chunk($vendor->tps)->each(function ($chunk) use (
-            &$success,
-            &$failed,
-            &$logs,
-            $service
-        ) {
-            foreach ($chunk as $number) {
-                try {
-                    $sent = $service->send(
-                        $this->message->sender_id,
-                        $number,
-                        $this->message->content
-                    );
-
-                    $sent ? $success++ : $failed++;
-
-                    $logs[] = [
-                        'number' => $number,
-                        'status' => $sent ? 'sent' : 'failed',
-                    ];
-                } catch (\Throwable $e) {
-                    $failed++;
-                    $logs[] = [
-                        'number' => $number,
-                        'status' => 'error',
-                        'error'  => $e->getMessage(),
-                    ];
-                }
+        try {
+            // If scheduled, delay job
+            if ($this->message->scheduled_at && 
+                $this->message->scheduled_at->isFuture()) {
+                // Reschedule job
+                $delayInSeconds = $this->message->scheduled_at->diffInSeconds(now());
+                self::dispatch($this->message)->delay($delayInSeconds);
+                return;
             }
-
-            sleep(1); // TPS control
-        });
-
-        $this->message->update([
-            'success_count' => $success,
-            'failed_count'  => $failed,
-            'status'        => $failed > 0 ? 'partial' : 'sent',
-            'sent_at'       => now(),
-            'response'      => $logs,
-        ]);
+            
+            // Update status
+            $this->message->update(['status' => 'processing']);
+            
+            // Send SMS
+            $smsService->send($this->message);
+            
+            Log::info('SMS bulk job completed', [
+                'sms_id' => $this->message->id,
+                'total' => $this->message->total_recipients,
+                'success' => $this->message->success_count,
+                'failed' => $this->message->failed_count
+            ]);
+            
+        } catch (\Throwable $e) {
+            Log::error('SMS bulk job failed', [
+                'sms_id' => $this->message->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            $this->message->update([
+                'status' => 'failed',
+                'response' => ['job_error' => $e->getMessage()]
+            ]);
+            
+            throw $e; // For job retry 
+        }
     }
 
     public function failed(\Throwable $e): void
     {
+        Log::error('SMS bulk job completely failed after retries', [
+            'sms_id' => $this->message->id,
+            'error' => $e->getMessage()
+        ]);
+        
         $this->message->update([
-            'status'   => 'failed',
-            'response' => ['error' => $e->getMessage()],
+            'status' => 'failed',
+            'response' => ['final_error' => $e->getMessage()],
         ]);
     }
 }
-

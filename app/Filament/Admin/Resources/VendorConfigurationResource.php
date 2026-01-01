@@ -136,3 +136,4 @@ class VendorConfigurationResource extends Resource
         ];
     }
 }
+

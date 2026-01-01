@@ -292,46 +292,48 @@
 // }
 
 
-namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
-use App\Models\VendorConfiguration;
+// Last update code
+// namespace App\Services;
 
-class SmsSenderService
-{
-    public function __construct(
-        protected VendorConfiguration $vendor
-    ) {}
+// use Illuminate\Support\Facades\Http;
+// use App\Models\VendorConfiguration;
 
-    public function send(string $senderId, string $to, string $message): bool
-    {
-        if (!$this->vendor->base_url || !$this->vendor->send_sms_url) {
-            throw new \Exception('SMS API URL not configured');
-        }
+// class SmsSenderService
+// {
+//     public function __construct(
+//         protected VendorConfiguration $vendor
+//     ) {}
 
-        $url = $this->vendor->base_url . $this->vendor->send_sms_url;
+//     public function send(string $senderId, string $to, string $message): bool
+//     {
+//         if (!$this->vendor->base_url || !$this->vendor->send_sms_url) {
+//             throw new \Exception('SMS API URL not configured');
+//         }
 
-        $payload = [
-            'apikey'         => $this->vendor->api_key,
-            'secretkey'      => $this->vendor->secret_key,
-            'callerID'       => $senderId,
-            'toUser'         => $to,
-            'messageContent' => $message,
-        ];
+//         $url = $this->vendor->base_url . $this->vendor->send_sms_url;
 
-        $response = Http::timeout(10)->post($url, $payload);
+//         $payload = [
+//             'apikey'         => $this->vendor->api_key,
+//             'secretkey'      => $this->vendor->secret_key,
+//             'callerID'       => $senderId,
+//             'toUser'         => $to,
+//             'messageContent' => $message,
+//         ];
 
-        // REVE returns 200 even for logical failure
-        if (!$response->successful()) {
-            return false;
-        }
+//         $response = Http::timeout(10)->post($url, $payload);
 
-        $body = $response->json();
+//         // REVE returns 200 even for logical failure
+//         if (!$response->successful()) {
+//             return false;
+//         }
 
-        // REVE-specific success check (adjust if needed)
-        return !isset($body['error']);
-    }
-}
+//         $body = $response->json();
+
+//         // REVE-specific success check (adjust if needed)
+//         return !isset($body['error']);
+//     }
+// }
 
 
 
@@ -458,3 +460,237 @@ class SmsSenderService
 //         return (int) ceil(strlen($message) / $limit);
 //     }
 // }
+
+
+
+
+// namespace App\Services\Sms;
+
+// use App\Models\ClientConfiguration;
+// use App\Models\VendorConfiguration;
+// use App\Models\SmsBulkMessage;
+// use Illuminate\Support\Facades\Http;
+// use Exception;
+
+// class SmsSendService
+// {
+//     public function send(SmsBulkMessage $sms)
+//     {
+//         /** -----------------------------
+//          * 1. Client Configuration
+//          * ----------------------------- */
+//         $client = ClientConfiguration::where('user_id', $sms->user_id)
+//             ->where('is_active', true)
+//             ->firstOrFail();
+
+//         $totalRecipients = count($sms->recipients);
+//         $totalCost = $totalRecipients * $client->rate_per_sms;
+
+//         if ($client->balance < $totalCost) {
+//             throw new Exception('Insufficient balance');
+//         }
+
+//         /** -----------------------------
+//          * 2. Vendor Routing
+//          * ----------------------------- */
+//         $routing = $client->service_routing;
+//         $vendorName = $routing['sms'] ?? null;
+
+//         if (!$vendorName) {
+//             throw new Exception('SMS vendor not configured');
+//         }
+
+//         $vendor = VendorConfiguration::where('vendor_name', $vendorName)
+//             ->where('is_active', true)
+//             ->firstOrFail();
+
+//         /** -----------------------------
+//          * 3. Send SMS
+//          * ----------------------------- */
+//         $success = 0;
+//         $failed = 0;
+//         $responses = [];
+
+//         foreach ($sms->recipients as $recipient) {
+//             try {
+//                 $response = Http::post(
+//                     $vendor->base_url . $vendor->send_sms_url,
+//                     [
+//                         'apikey'   => $vendor->api_key,
+//                         'secretkey'=> $vendor->secret_key,
+//                         'from'     => $sms->sender_id,
+//                         'toUser'   => $recipient['number'],
+//                         'content'  => $sms->content,
+//                     ]
+//                 )->json();
+
+//                 $responses[] = $response;
+//                 $success++;
+//             } catch (\Throwable $e) {
+//                 $failed++;
+//                 $responses[] = [
+//                     'number' => $recipient['number'],
+//                     'error' => $e->getMessage(),
+//                 ];
+//             }
+//         }
+
+//         /** -----------------------------
+//          * 4. Update Records
+//          * ----------------------------- */
+//         $sms->update([
+//             'vendor_configuration_id' => $vendor->id,
+//             'total_recipients' => $totalRecipients,
+//             'success_count' => $success,
+//             'failed_count' => $failed,
+//             'cost' => $totalCost,
+//             'status' => $failed > 0 ? 'partial' : 'sent',
+//             'response' => $responses,
+//             'sent_at' => now(),
+//         ]);
+
+//         $client->decrement('balance', $totalCost);
+
+//         return true;
+//     }
+// }
+
+
+
+
+namespace App\Services;
+
+use App\Models\SmsBulkMessage;
+use App\Models\VendorConfiguration;
+use Illuminate\Support\Facades\Http;
+
+class SmsSenderService
+{
+    public function sendSms(SmsBulkMessage $sms)
+    {
+        try {
+            // SMS status update
+            $sms->update(['status' => 'processing']);
+            
+            // Vendor configuration
+            $vendor = VendorConfiguration::find($sms->vendor_configuration_id);
+            
+            if (!$vendor || !$vendor->is_active) {
+                throw new \Exception('Vendor not found or inactive');
+            }
+            
+            // loop through recipients
+            $successCount = 0;
+            $failedCount = 0;
+            $responses = [];
+            
+            foreach ($sms->recipients as $recipient) {
+                try {
+                    // API Call
+                    $response = $this->callVendorApi($vendor, $recipient, $sms);
+                    
+                    if ($response['success']) {
+                        $successCount++;
+                    } else {
+                        $failedCount++;
+                    }
+                    
+                    $responses[] = [
+                        'number' => $recipient,
+                        'response' => $response,
+                        'timestamp' => now()
+                    ];
+                    
+                } catch (\Exception $e) {
+                    $failedCount++;
+                    $responses[] = [
+                        'number' => $recipient,
+                        'error' => $e->getMessage(),
+                        'timestamp' => now()
+                    ];
+                }
+                
+                // TPS (Transactions Per Second) control
+                usleep((1000000 / $vendor->tps));
+            }
+            
+            // update result
+            $sms->update([
+                'status' => ($failedCount == 0) ? 'sent' : (($successCount > 0) ? 'partial' : 'failed'),
+                'success_count' => $successCount,
+                'failed_count' => $failedCount,
+                'response' => $responses,
+                'sent_at' => now(),
+                'cost' => $this->calculateCost($sms, $successCount)
+            ]);
+            
+        } catch (\Exception $e) {
+            $sms->update([
+                'status' => 'failed',
+                'response' => ['error' => $e->getMessage()]
+            ]);
+        }
+    }
+    
+    protected function callVendorApi(VendorConfiguration $vendor, $recipient, SmsBulkMessage $sms)
+    {
+        $url = $vendor->base_url . $vendor->send_sms_url;
+        
+        // Request data prepare according to vendor
+        $requestData = $this->prepareRequestData($vendor, $recipient, $sms);
+        
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $vendor->api_key,
+            'Content-Type' => 'application/json',
+        ])->post($url, $requestData);
+        
+        return [
+            'success' => $response->successful(),
+            'status_code' => $response->status(),
+            'body' => $response->json(),
+            'vendor' => $vendor->vendor_name
+        ];
+    }
+    
+    protected function prepareRequestData(VendorConfiguration $vendor, $recipient, SmsBulkMessage $sms)
+    {
+        // Data format from vendor configaration
+        
+        if ($vendor->vendor_name == 'Reve') {
+            return [
+                'sender' => $sms->sender_id,
+                'destination' => $recipient,
+                'message' => $sms->content,
+                'type' => 'text'
+            ];
+        }
+        // For other vendors
+        elseif ($vendor->vendor_name == 'GreenWeb') {
+            return [
+                'to' => $recipient,
+                'message' => $sms->content,
+                'token' => $vendor->api_key
+            ];
+        }
+        
+        // Default format
+        return [
+            'from' => $sms->sender_id,
+            'to' => $recipient,
+            'text' => $sms->content
+        ];
+    }
+    
+    protected function calculateCost(SmsBulkMessage $sms, $successCount)
+    {
+        // Find client configuration
+        $clientConfig = ClientConfiguration::where('user_id', $sms->user_id)->first();
+        
+        if ($clientConfig) {
+            return $successCount * $clientConfig->rate_per_sms;
+        }
+        
+        // Default rate
+        return $successCount * 0.50; // Example: 0.50 taka per SMS
+    }
+}
