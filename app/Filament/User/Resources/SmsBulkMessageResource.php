@@ -5,12 +5,20 @@ namespace App\Filament\User\Resources;
 use App\Filament\User\Resources\SmsBulkMessageResource\Pages;
 use App\Models\SmsBulkMessage;
 use App\Models\VendorConfiguration;
+use Illuminate\Database\Eloquent\Builder;
 // use App\Models\SmsSenderId;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Actions\Action;
+use App\Exports\SmsBulkMessagesExport;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportHeaderAction;
+use AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction;
+
+use Maatwebsite\Excel\Facades\Excel;
 use Filament\Forms\Components\Select;
 
 
@@ -187,14 +195,88 @@ class SmsBulkMessageResource extends Resource
                     ->dateTime()
                     ->sortable(),
             ])
+            ->defaultSort('created_at', 'desc')
+
+            ->filters([
+                // Sender Device Filter
+                Tables\Filters\SelectFilter::make('sender_id')
+                    ->label('Sender Device')
+                    ->options(
+                        SmsBulkMessage::query()
+                            ->whereNotNull('sender_id')
+                            ->distinct()
+                            ->pluck('sender_id', 'sender_id')
+                            ->toArray()
+                    )
+                    ->searchable()
+                    ->preload(),
+
+                // Sent Status Filter
+                Tables\Filters\TernaryFilter::make('is_sent')
+                    ->label('Sent Status')
+                    ->trueLabel('Sent')
+                    ->falseLabel('Not Sent')
+                    ->queries(
+                        true: fn (Builder $query) => $query->where('is_sent', true),
+                        false: fn (Builder $query) => $query->where('is_sent', false),
+                        blank: fn (Builder $query) => $query,
+                    ),
+
+                //  Tables\Filters\SelectFilter::make('status')
+                //         ->options([
+                //             'pending' => 'Pending',
+                //             'processing' => 'Processing',
+                //             'sent' => 'Sent',
+                //             'partial' => 'Partial',
+                //             'failed' => 'Failed',
+                //         ]),    
+
+                // Created Date Range Filter
+                Tables\Filters\Filter::make('created_at')
+                    ->label('Created Date')
+                    ->form([
+                        Forms\Components\DatePicker::make('from')->label('From'),
+                        Forms\Components\DatePicker::make('until')->label('Until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['from'] ?? null,
+                                fn ($q, $date) => $q->whereDate('created_at', '>=', $date)
+                            )
+                            ->when(
+                                $data['until'] ?? null,
+                                fn ($q, $date) => $q->whereDate('created_at', '<=', $date)
+                            );
+                    })
+                    ->columnSpan(2)->columns(2),
+            ], layout: FiltersLayout::AboveContent)
+
+            ->headerActions([
+                FilamentExportHeaderAction::make('export')
+                    ->label('Export Data')
+                    ->fileName('bulk_send_message_recipients')
+                    ->defaultFormat('xlsx')
+                    ->withHiddenColumns()
+                    ->color('success')
+                    ->icon('heroicon-o-arrow-down-tray'),
+            ])
+
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
+
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
+
+                FilamentExportBulkAction::make('export-selected')
+                    ->label('Export Selected')
+                    ->fileName('selected_recipients_export')
+                    ->defaultFormat('xlsx'),
             ]);
     }
+
 
     public static function getRelations(): array
     {
